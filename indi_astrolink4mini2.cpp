@@ -96,7 +96,7 @@ void IndiAstroLink4mini2::TimerHit()
 {
     if (isConnected())
     {
-        //sensorRead();
+        sensorRead();
         SetTimer(getCurrentPollingPeriod());
     }
 }
@@ -444,6 +444,7 @@ bool IndiAstroLink4mini2::sensorRead()
     if (sendCommand("q", res))
     {
         std::vector<std::string> result = split(res, ":");
+        result.erase(result.begin());
 
         float focuserPosition = std::stod(result[Q_FOC1_POS]);
         FocusAbsPosN[0].value = focuserPosition;
