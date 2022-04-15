@@ -36,13 +36,38 @@
 #include <indiweatherinterface.h>
 #include <connectionplugins/connectionserial.h>
 
-#define Q_STEPPER_POS		1
-#define Q_STEPS_TO_GO		2
-#define Q_SENS1_TYPE		3
-#define Q_SENS1_TEMP		4
-#define Q_SENS1_HUM			5
-#define Q_SENS1_DEW			6
-#define Q_COMP_DIFF			7
+#define Q_DEVICE_CODE       0
+#define Q_FOC1_POS		    1
+#define Q_FOC1_TO_GO		2
+#define Q_FOC2_POS          3
+#define Q_FOC2_TO_GO        4
+#define Q_ITOT              5
+#define Q_SENS1_PRESENT     6
+#define Q_SENS1_TEMP        7
+#define Q_SENS1_HUM         8
+#define Q_SENS1_DEW         9
+#define Q_SENS2_PRESENT     10
+#define Q_SENS2_TEMP        11
+#define Q_PWM1              12
+#define Q_PWM2              13
+#define Q_OUT1              14
+#define Q_OUT2              15
+#define Q_OUT3              16
+#define Q_VIN               17
+#define Q_VREG              18
+#define Q_AH                19
+#define Q_WH                20
+#define Q_FOC1_COMP         21
+#define Q_FOC2_COMP         22
+#define Q_OVERTYPE          23
+#define Q_OVERVALUE         24
+#define Q_MLX_TEMP          25
+#define Q_MLX_AUX           26
+#define Q_SENS2_HUM         30
+#define Q_SENS2_DEW         31
+#define Q_SBM_PRESENT       32
+#define Q_SBM               33
+
 
 #define U_MAX_POS			5
 #define U_REVERSED			6

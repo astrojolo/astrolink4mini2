@@ -390,13 +390,12 @@ bool IndiAstroLink4mini2::sendCommand(const char *cmd, char *res)
 
     if (isSimulation())
     {
-         if(strcmp(cmd, "#") == 0) sprintf(res, "%s\n", "#:AstroLink4mini");
-        if(strcmp(cmd, "q") == 0) sprintf(res, "%s\n", "q:1234:0:1.47:1:2.12:45.1:-12.81:1:-25.22:45:0:0:0:1:12.1:5.0:1.12:13.41:0:34:0:0");
-        if(strcmp(cmd, "p") == 0) sprintf(res, "%s\n", "p:1234");
-        if(strcmp(cmd, "i") == 0) sprintf(res, "%s\n", "i:0");
-        if(strcmp(cmd, "n") == 0) sprintf(res, "%s\n", "n:1077:14.0:10.0:100");
-        if(strcmp(cmd, "e") == 0) sprintf(res, "%s\n", "e:30:1200:1:0:20");
-        if(strcmp(cmd, "u") == 0) sprintf(res, "%s\n", "u:25000:220:0:100:440:0:0:1:257:0:0:0:0:0:1:0:0");
+        if(strncmp(cmd, "#", 1) == 0) sprintf(res, "%s\n", "#:AstroLink4mini");
+        if(strncmp(cmd, "q", 1) == 0) sprintf(res, "%s\n", "q:AL4MII:1234:0:5678:0:3.14:1:23.12:45:9.11:1:19.19:35:80:1:0:1:12.11:7.62:20.01:132.11:33:0:0:0:1:-10.1:7.7:1:19.19:35:8.22:1:1:18.11");
+        if(strncmp(cmd, "p", 1) == 0) sprintf(res, "%s\n", "p:1234");
+        if(strncmp(cmd, "i", 1) == 0) sprintf(res, "%s\n", "i:0");
+        if(strncmp(cmd, "u", 1) == 0) sprintf(res, "%s\n", "u:1:1:80:120:30:50:200:800:200:800:0:2:10000:80000:0:0:50:18:30:15:5:10:10:0:1:0:0:0:0:0:0:0:40:90:10:1100:14000:10000:100:0");
+        if(strncmp(cmd, "A", 1) == 0) sprintf(res, "%s\n", "A:4.5.0 mini II");
         if(strncmp(cmd, "R", 1) == 0) sprintf(res, "%s\n", "R:");
         if(strncmp(cmd, "C", 1) == 0) sprintf(res, "%s\n", "C:");
         if(strncmp(cmd, "B", 1) == 0) sprintf(res, "%s\n", "B:");
@@ -404,10 +403,6 @@ bool IndiAstroLink4mini2::sendCommand(const char *cmd, char *res)
         if(strncmp(cmd, "P", 1) == 0) sprintf(res, "%s\n", "P:");
         if(strncmp(cmd, "U", 1) == 0) sprintf(res, "%s\n", "U:");
         if(strncmp(cmd, "S", 1) == 0) sprintf(res, "%s\n", "S:");
-        if(strncmp(cmd, "G", 1) == 0) sprintf(res, "%s\n", "G:");
-        if(strncmp(cmd, "K", 1) == 0) sprintf(res, "%s\n", "K:");
-        if(strncmp(cmd, "N", 1) == 0) sprintf(res, "%s\n", "N:");
-        if(strncmp(cmd, "E", 1) == 0) sprintf(res, "%s\n", "E:");
     }
     else
     {
