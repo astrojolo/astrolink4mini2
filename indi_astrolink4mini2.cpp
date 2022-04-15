@@ -85,7 +85,7 @@ bool IndiAstroLink4mini2::Handshake()
         }
         else
         {
-            SetTimer(POLLMS);
+            SetTimer(getCurrentPollingPeriod());
             return true;
         }
     }
@@ -97,7 +97,7 @@ void IndiAstroLink4mini2::TimerHit()
     if (isConnected())
     {
         sensorRead();
-        SetTimer(POLLMS);
+        SetTimer(getCurrentPollingPeriod());
     }
 }
 
