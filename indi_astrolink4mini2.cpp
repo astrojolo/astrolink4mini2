@@ -121,6 +121,7 @@ bool IndiAstroLink4mini2::initProperties()
     WI::initProperties(ENVIRONMENT_TAB, ENVIRONMENT_TAB);
 
     addDebugControl();
+    addSimulationControl();
     addConfigurationControl();
 
     serialConnection = new Connection::Serial(this);
@@ -389,24 +390,24 @@ bool IndiAstroLink4mini2::sendCommand(const char *cmd, char *res)
 
     if (isSimulation())
     {
-        // if(strcmp(cmd, "#") == 0) sprintf(res, "%s\n", "#:FocuserLink");
-        // if(strcmp(cmd, "q") == 0) sprintf(res, "%s\n", "q:1234:0:1.47:1:2.12:45.1:-12.81:1:-25.22:45:0:0:0:1:12.1:5.0:1.12:13.41:0:34:0:0");
-        // if(strcmp(cmd, "p") == 0) sprintf(res, "%s\n", "p:1234");
-        // if(strcmp(cmd, "i") == 0) sprintf(res, "%s\n", "i:0");
-        // if(strcmp(cmd, "n") == 0) sprintf(res, "%s\n", "n:1077:14.0:10.0:100");
-        // if(strcmp(cmd, "e") == 0) sprintf(res, "%s\n", "e:30:1200:1:0:20");
-        // if(strcmp(cmd, "u") == 0) sprintf(res, "%s\n", "u:25000:220:0:100:440:0:0:1:257:0:0:0:0:0:1:0:0");
-        // if(strncmp(cmd, "R", 1) == 0) sprintf(res, "%s\n", "R:");
-        // if(strncmp(cmd, "C", 1) == 0) sprintf(res, "%s\n", "C:");
-        // if(strncmp(cmd, "B", 1) == 0) sprintf(res, "%s\n", "B:");
-        // if(strncmp(cmd, "H", 1) == 0) sprintf(res, "%s\n", "H:");
-        // if(strncmp(cmd, "P", 1) == 0) sprintf(res, "%s\n", "P:");
-        // if(strncmp(cmd, "U", 1) == 0) sprintf(res, "%s\n", "U:");
-        // if(strncmp(cmd, "S", 1) == 0) sprintf(res, "%s\n", "S:");
-        // if(strncmp(cmd, "G", 1) == 0) sprintf(res, "%s\n", "G:");
-        // if(strncmp(cmd, "K", 1) == 0) sprintf(res, "%s\n", "K:");
-        // if(strncmp(cmd, "N", 1) == 0) sprintf(res, "%s\n", "N:");
-        // if(strncmp(cmd, "E", 1) == 0) sprintf(res, "%s\n", "E:");
+         if(strcmp(cmd, "#") == 0) sprintf(res, "%s\n", "#:AstroLink4mini");
+        if(strcmp(cmd, "q") == 0) sprintf(res, "%s\n", "q:1234:0:1.47:1:2.12:45.1:-12.81:1:-25.22:45:0:0:0:1:12.1:5.0:1.12:13.41:0:34:0:0");
+        if(strcmp(cmd, "p") == 0) sprintf(res, "%s\n", "p:1234");
+        if(strcmp(cmd, "i") == 0) sprintf(res, "%s\n", "i:0");
+        if(strcmp(cmd, "n") == 0) sprintf(res, "%s\n", "n:1077:14.0:10.0:100");
+        if(strcmp(cmd, "e") == 0) sprintf(res, "%s\n", "e:30:1200:1:0:20");
+        if(strcmp(cmd, "u") == 0) sprintf(res, "%s\n", "u:25000:220:0:100:440:0:0:1:257:0:0:0:0:0:1:0:0");
+        if(strncmp(cmd, "R", 1) == 0) sprintf(res, "%s\n", "R:");
+        if(strncmp(cmd, "C", 1) == 0) sprintf(res, "%s\n", "C:");
+        if(strncmp(cmd, "B", 1) == 0) sprintf(res, "%s\n", "B:");
+        if(strncmp(cmd, "H", 1) == 0) sprintf(res, "%s\n", "H:");
+        if(strncmp(cmd, "P", 1) == 0) sprintf(res, "%s\n", "P:");
+        if(strncmp(cmd, "U", 1) == 0) sprintf(res, "%s\n", "U:");
+        if(strncmp(cmd, "S", 1) == 0) sprintf(res, "%s\n", "S:");
+        if(strncmp(cmd, "G", 1) == 0) sprintf(res, "%s\n", "G:");
+        if(strncmp(cmd, "K", 1) == 0) sprintf(res, "%s\n", "K:");
+        if(strncmp(cmd, "N", 1) == 0) sprintf(res, "%s\n", "N:");
+        if(strncmp(cmd, "E", 1) == 0) sprintf(res, "%s\n", "E:");
     }
     else
     {
