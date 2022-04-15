@@ -445,10 +445,10 @@ bool IndiAstroLink4mini2::sensorRead()
     {
         std::vector<std::string> result = split(res, ":");
 
-        float focuserPosition = std::stod(result[Q_STEPPER_POS]);
+        float focuserPosition = std::stod(result[Q_FOC1_POS]);
         FocusAbsPosN[0].value = focuserPosition;
         FocusPosMMN[0].value = focuserPosition * FocuserSettingsN[FS_STEP_SIZE].value / 1000.0;
-        float stepsToGo = std::stod(result[Q_STEPS_TO_GO]);
+        float stepsToGo = std::stod(result[Q_FOC1_TO_GO]);
         if (stepsToGo == 0)
         {
             if (requireBacklashReturn)
@@ -468,7 +468,7 @@ bool IndiAstroLink4mini2::sensorRead()
 
         if (result.size() > 5)
         {
-            if (std::stod(result[Q_SENS1_TYPE]) > 0)
+            if (std::stod(result[Q_SENS1_PRESENT]) > 0)
             {
                 setParameterValue("WEATHER_TEMPERATURE", std::stod(result[Q_SENS1_TEMP]));
                 setParameterValue("WEATHER_HUMIDITY", std::stod(result[Q_SENS1_HUM]));
@@ -481,7 +481,7 @@ bool IndiAstroLink4mini2::sensorRead()
                 ParametersNP.s = IPS_IDLE;
             }
 
-            CompensationValueN[0].value = std::stod(result[Q_COMP_DIFF]);
+            CompensationValueN[0].value = std::stod(result[Q_FOC1_COMP]);
             CompensateNowSP.s = CompensationValueNP.s = (CompensationValueN[0].value > 0) ? IPS_OK : IPS_IDLE;
             CompensateNowS[0].s = (CompensationValueN[0].value != 0) ? ISS_OFF : ISS_ON;
             IDSetNumber(&CompensationValueNP, nullptr);
