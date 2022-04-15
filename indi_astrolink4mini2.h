@@ -68,14 +68,46 @@
 #define Q_SBM_PRESENT       32
 #define Q_SBM               33
 
-
-#define U_MAX_POS			5
-#define U_REVERSED			6
-#define U_STEPSIZE			7
-#define U_COMPSTEP          8
-#define U_COMPCYCLE         9
-#define U_COMPTRIGGER       10
-#define U_COMPAUTO          11
+#define U_BUZZER            0
+#define U_MANUAL            1
+#define U_FOC1_CUR          2
+#define U_FOC2_CUR          3
+#define U_FOC1_HOLD         4
+#define U_FOC2_HOLD         5
+#define U_FOC1_SPEED        6
+#define U_FOC2_SPEED        7
+#define U_FOC1_ACC          8
+#define U_FOC2_ACC          9
+#define U_FOC1_MODE         10
+#define U_FOC2_MODE         11
+#define U_FOC1_MAX          12
+#define U_FOC2_MAX          13
+#define U_FOC1_REV          14
+#define U_FOC2_REV          15
+#define U_FOC1_STEP         16
+#define U_FOC2_STEP         17
+#define U_FOC1_COMPSTEPS    18
+#define U_FOC2_COMPSTEPS    19
+#define U_FOC_COMP_CYCLE    20
+#define U_FOC1_COMPTRIGGER  21
+#define U_FOC2_COMPTRIGGER  22
+#define U_FOC1_COMPAUTO     23
+#define U_FOC2_COMPAUTO     24
+#define U_PWM_PRESC         25
+#define U_OUT1_DEF          26
+#define U_OUT2_DEF          27
+#define U_OUT3_DEF          28
+#define U_PWM1_DEF          29
+#define U_PWM2_DEF          30
+#define U_HUM_SENSOR        31
+#define U_HUM_START         32
+#define U_HUM_FULL          33
+#define U_TEMP_PRESET       34
+#define U_VREF              35
+#define U_OVERVOLTAGE       36
+#define U_OVERCURRENT       37
+#define U_OVERTIME          38
+#define U_COMPSENSOR        39
 
 
 namespace Connection
