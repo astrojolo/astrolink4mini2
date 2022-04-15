@@ -208,7 +208,7 @@ bool IndiAstroLink4mini2::ISNewNumber(const char *dev, const char *name, double 
             bool allOk = true;
             std::map<int, std::string> updates;
             updates[U_FOC1_STEP] = doubleToStr(values[FS_STEP_SIZE] * 100.0);
-            updates[U_FOC1_COMPCYCLE] = "30"; // cycle [s]
+            updates[U_FOC_COMP_CYCLE] = "30"; // cycle [s]
             updates[U_FOC1_COMPSTEPS] = doubleToStr(values[FS_COMPENSATION] * 100.0);
             updates[U_FOC1_COMPTRIGGER] = doubleToStr(values[FS_COMP_THRESHOLD]);
             allOk = allOk && updateSettings("u", "U", updates);
@@ -345,7 +345,7 @@ bool IndiAstroLink4mini2::AbortFocuser()
 
 bool IndiAstroLink4mini2::ReverseFocuser(bool enabled)
 {
-    return updateSettings("u", "U", U_FOC1_REVERSED, (enabled) ? "1" : "0");
+    return updateSettings("u", "U", U_FOC1_REV, (enabled) ? "1" : "0");
 }
 
 bool IndiAstroLink4mini2::SyncFocuser(uint32_t ticks)
@@ -500,7 +500,7 @@ bool IndiAstroLink4mini2::sensorRead()
             FocuserSettingsN[FS_STEP_SIZE].value = std::stod(result[U_FOC1_STEP]) / 100.0;
             FocuserSettingsN[FS_COMPENSATION].value = std::stod(result[U_FOC1_COMPSTEPS]) / 100.0;
             FocuserSettingsN[FS_COMP_THRESHOLD].value = std::stod(result[U_FOC1_COMPTRIGGER]);
-            FocusMaxPosN[0].value = std::stod(result[U_FOC1_MAX_POS]);
+            FocusMaxPosN[0].value = std::stod(result[U_FOC1_MAX]);
             FocuserSettingsNP.s = IPS_OK;
 
             FocuserCompModeS[FS_COMP_MANUAL].s = (std::stod(result[U_FOC1_COMPAUTO]) == 0) ? ISS_ON : ISS_OFF;
