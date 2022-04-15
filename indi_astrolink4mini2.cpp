@@ -96,7 +96,7 @@ void IndiAstroLink4mini2::TimerHit()
 {
     if (isConnected())
     {
-        sensorRead();
+        //sensorRead();
         SetTimer(getCurrentPollingPeriod());
     }
 }
