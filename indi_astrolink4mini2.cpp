@@ -353,7 +353,7 @@ bool IndiAstroLink4mini2::ReverseFocuser(bool enabled)
 bool IndiAstroLink4mini2::SyncFocuser(uint32_t ticks)
 {
     char cmd[ASTROLINK4_LEN] = {0}, res[ASTROLINK4_LEN] = {0};
-    snprintf(cmd, ASTROLINK4_LEN, "P:%u", ticks);
+    snprintf(cmd, ASTROLINK4_LEN, "P:0:%u", ticks);
     return sendCommand(cmd, res);
 }
 
