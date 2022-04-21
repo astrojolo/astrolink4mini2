@@ -85,7 +85,8 @@ bool IndiAstroLink4mini2::Handshake()
         }
         else
         {
-            SetTimer(POLLTIME);
+            LOGF_ERROR("Serial error: %s", "settimer");
+            SetTimer(500);
             return true;
         }
     }
@@ -97,7 +98,7 @@ void IndiAstroLink4mini2::TimerHit()
     if (isConnected())
     {
         sensorRead();
-        SetTimer(POLLTIME);
+        SetTimer(500);
     }
 }
 
@@ -443,6 +444,7 @@ bool IndiAstroLink4mini2::sensorRead()
     char res[ASTROLINK4_LEN] = {0};
     if (sendCommand("q", res))
     {
+        LOGF_ERROR("Serial error: %s", res);
         std::vector<std::string> result = split(res, ":");
         result.erase(result.begin());
 
