@@ -553,7 +553,7 @@ std::string IndiAstroLink4mini2::doubleToStr(double val)
 bool IndiAstroLink4mini2::updateSettings(const char *getCom, const char *setCom, int index, const char *value)
 {
     std::map<int, std::string> values;
-    values[index] = value;
+    values[index + 1] = value;
     return updateSettings(getCom, setCom, values);
 }
 
@@ -563,7 +563,6 @@ bool IndiAstroLink4mini2::updateSettings(const char *getCom, const char *setCom,
     snprintf(cmd, ASTROLINK4_LEN, "%s", getCom);
     if (sendCommand(cmd, res))
     {
-        DEBUGF(INDI::Logger::DBG_SESSION, "Update %s", cmd);
         std::string concatSettings = "";
         std::vector<std::string> result = split(res, ":");
         if (result.size() >= values.size())
@@ -575,7 +574,6 @@ bool IndiAstroLink4mini2::updateSettings(const char *getCom, const char *setCom,
             for (const auto &piece : result)
                 concatSettings += piece + ":";
 
-            DEBUGF(INDI::Logger::DBG_SESSION, "Update %s", concatSettings.c_str());
             snprintf(cmd, ASTROLINK4_LEN, "%s", concatSettings.c_str());
             if (sendCommand(cmd, res))
                 return true;
