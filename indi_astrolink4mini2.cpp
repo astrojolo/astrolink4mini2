@@ -553,7 +553,7 @@ std::string IndiAstroLink4mini2::doubleToStr(double val)
 bool IndiAstroLink4mini2::updateSettings(const char *getCom, const char *setCom, int index, const char *value)
 {
     std::map<int, std::string> values;
-    values[index + 1] = value;
+    values[index] = value;
     return updateSettings(getCom, setCom, values);
 }
 
