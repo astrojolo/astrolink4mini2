@@ -85,7 +85,6 @@ bool IndiAstroLink4mini2::Handshake()
         }
         else
         {
-            LOGF_ERROR("Serial error: %s", "settimer");
             SetTimer(500);
             return true;
         }
@@ -95,9 +94,9 @@ bool IndiAstroLink4mini2::Handshake()
 
 void IndiAstroLink4mini2::TimerHit()
 {
-     LOGF_ERROR("Serial error: %s", "timerhit");
     if (isConnected())
     {
+        LOGF_ERROR("Serial error: %s", "timerhitconnected");
         sensorRead();
         SetTimer(500);
     }
