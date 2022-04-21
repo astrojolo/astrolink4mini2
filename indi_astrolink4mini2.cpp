@@ -82,7 +82,7 @@ bool IndiAstroLink4mini2::Handshake()
     {
         if (strncmp(res, "#:AstroLink4mini", 16) != 0)
         {
-            LOG_ERROR("Device not recognized.");
+            DEBUG(INDI::Logger::DBG_ERROR, "Device not recognized.");
             return false;
         }
         else
@@ -220,7 +220,7 @@ bool IndiAstroLink4mini2::ISNewNumber(const char *dev, const char *name, double 
                 FocuserSettingsNP.s = IPS_BUSY;
                 IUUpdateNumber(&FocuserSettingsNP, values, names, n);
                 IDSetNumber(&FocuserSettingsNP, nullptr);
-                LOG_INFO(values[FS_COMPENSATION] > 0 ? "Temperature compensation is enabled." : "Temperature compensation is disabled.");
+                DEBUG(INDI::Logger::DBG_SESSION, values[FS_COMPENSATION] > 0 ? "Temperature compensation is enabled." : "Temperature compensation is disabled.");
                 return true;
             }
             FocuserSettingsNP.s = IPS_ALERT;
@@ -563,6 +563,7 @@ bool IndiAstroLink4mini2::updateSettings(const char *getCom, const char *setCom,
     snprintf(cmd, ASTROLINK4_LEN, "%s", getCom);
     if (sendCommand(cmd, res))
     {
+        DEBUGF(INDI::Logger::DBG_SESSION, "Update %s", cmd);
         std::string concatSettings = "";
         std::vector<std::string> result = split(res, ":");
         if (result.size() >= values.size())
@@ -573,6 +574,8 @@ bool IndiAstroLink4mini2::updateSettings(const char *getCom, const char *setCom,
 
             for (const auto &piece : result)
                 concatSettings += piece + ":";
+
+            DEBUGF(INDI::Logger::DBG_SESSION, "Update %s", concatSettings.c_str());
             snprintf(cmd, ASTROLINK4_LEN, "%s", concatSettings.c_str());
             if (sendCommand(cmd, res))
                 return true;
