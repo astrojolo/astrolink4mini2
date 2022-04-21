@@ -109,6 +109,7 @@
 #define U_OVERTIME          38
 #define U_COMPSENSOR        39
 
+#define POLLTIME            500
 
 namespace Connection
 {
