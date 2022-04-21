@@ -95,6 +95,7 @@ bool IndiAstroLink4mini2::Handshake()
 
 void IndiAstroLink4mini2::TimerHit()
 {
+     LOGF_ERROR("Serial error: %s", "timerhit");
     if (isConnected())
     {
         sensorRead();
