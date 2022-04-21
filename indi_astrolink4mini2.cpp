@@ -25,6 +25,8 @@
 #define ASTROLINK4_LEN 200
 #define ASTROLINK4_TIMEOUT 3
 
+#define POLLTIME 500
+
 //////////////////////////////////////////////////////////////////////
 /// Delegates
 //////////////////////////////////////////////////////////////////////
@@ -85,7 +87,7 @@ bool IndiAstroLink4mini2::Handshake()
         }
         else
         {
-            SetTimer(500);
+            SetTimer(POLLTIME);
             return true;
         }
     }
@@ -97,7 +99,7 @@ void IndiAstroLink4mini2::TimerHit()
     if (isConnected())
     {
         sensorRead();
-        SetTimer(500);
+        SetTimer(POLLTIME);
     }
 }
 
@@ -406,17 +408,13 @@ bool IndiAstroLink4mini2::sendCommand(const char *cmd, char *res)
     }
     else
     {
-        LOGF_ERROR("Serial error: %s", "sendcommand");
-    
         tcflush(PortFD, TCIOFLUSH);
         sprintf(command, "%s\n", cmd);
         LOGF_DEBUG("CMD %s", command);
         if ((tty_rc = tty_write_string(PortFD, command, &nbytes_written)) != TTY_OK)
             return false;
 
-        LOGF_ERROR("Serial error: %s", "write");
-    
-        if (!res)
+         if (!res)
         {
             tcflush(PortFD, TCIOFLUSH);
             return true;
@@ -424,8 +422,6 @@ bool IndiAstroLink4mini2::sendCommand(const char *cmd, char *res)
 
         if ((tty_rc = tty_nread_section(PortFD, res, ASTROLINK4_LEN, stopChar, ASTROLINK4_TIMEOUT, &nbytes_read)) != TTY_OK || nbytes_read == 1)
             return false;
-
-            LOGF_ERROR("Serial error: %s", "read");
 
         tcflush(PortFD, TCIOFLUSH);
         res[nbytes_read - 1] = '\0';
@@ -449,7 +445,6 @@ bool IndiAstroLink4mini2::sensorRead()
     char res[ASTROLINK4_LEN] = {0};
     if (sendCommand("q", res))
     {
-        LOGF_ERROR("Serial error: %s", res);
         std::vector<std::string> result = split(res, ":");
         result.erase(result.begin());
 
