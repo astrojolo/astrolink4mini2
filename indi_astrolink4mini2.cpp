@@ -410,7 +410,7 @@ bool IndiAstroLink4mini2::sendCommand(const char *cmd, char *res)
     {
         tcflush(PortFD, TCIOFLUSH);
         sprintf(command, "%s\n", cmd);
-        DEBUGF(INDI::Logger::DBG_DEBUG, "RES %s", res);
+        DEBUGF(INDI::Logger::DBG_DEBUG, "CMD %s", cmd);
         if ((tty_rc = tty_write_string(PortFD, command, &nbytes_written)) != TTY_OK)
             return false;
 
