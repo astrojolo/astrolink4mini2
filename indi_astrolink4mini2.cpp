@@ -22,7 +22,7 @@
 #define VERSION_MAJOR 0
 #define VERSION_MINOR 2
 
-#define ASTROLINK4_LEN 100
+#define ASTROLINK4_LEN 200
 #define ASTROLINK4_TIMEOUT 3
 
 //////////////////////////////////////////////////////////////////////
@@ -96,7 +96,6 @@ void IndiAstroLink4mini2::TimerHit()
 {
     if (isConnected())
     {
-        LOGF_ERROR("Serial error: %s", "timerhitconnected");
         sensorRead();
         SetTimer(500);
     }
@@ -407,12 +406,16 @@ bool IndiAstroLink4mini2::sendCommand(const char *cmd, char *res)
     }
     else
     {
+        LOGF_ERROR("Serial error: %s", "sendcommand");
+    
         tcflush(PortFD, TCIOFLUSH);
         sprintf(command, "%s\n", cmd);
         LOGF_DEBUG("CMD %s", command);
         if ((tty_rc = tty_write_string(PortFD, command, &nbytes_written)) != TTY_OK)
             return false;
 
+        LOGF_ERROR("Serial error: %s", "write");
+    
         if (!res)
         {
             tcflush(PortFD, TCIOFLUSH);
@@ -421,6 +424,8 @@ bool IndiAstroLink4mini2::sendCommand(const char *cmd, char *res)
 
         if ((tty_rc = tty_nread_section(PortFD, res, ASTROLINK4_LEN, stopChar, ASTROLINK4_TIMEOUT, &nbytes_read)) != TTY_OK || nbytes_read == 1)
             return false;
+
+            LOGF_ERROR("Serial error: %s", "read");
 
         tcflush(PortFD, TCIOFLUSH);
         res[nbytes_read - 1] = '\0';
