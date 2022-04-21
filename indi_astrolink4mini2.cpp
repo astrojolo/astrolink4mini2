@@ -443,7 +443,7 @@ bool IndiAstroLink4mini2::sensorRead()
     char res[ASTROLINK4_LEN] = {0};
     if (sendCommand("q", res))
     {
-        LOGF_ERROR("Serial error: %s", result);
+        LOGF_ERROR("Serial error: %s", res);
         std::vector<std::string> result = split(res, ":");
         result.erase(result.begin());
 
