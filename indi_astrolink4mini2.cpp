@@ -501,7 +501,7 @@ bool IndiAstroLink4mini2::sensorRead()
             IDSetNumber(&CompensationValueNP, nullptr);
             IDSetSwitch(&CompensateNowSP, nullptr);
 
-            PowerDataN[POW_REG].value = std::stod(result[Q_REG]);
+            PowerDataN[POW_REG].value = std::stod(result[Q_VREG]);
             PowerDataN[POW_VIN].value = std::stod(result[Q_VIN]);
             PowerDataN[POW_AH].value = std::stod(result[Q_AH]);
             PowerDataN[POW_WH].value = std::stod(result[Q_WH]);            
