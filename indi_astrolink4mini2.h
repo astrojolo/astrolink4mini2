@@ -196,6 +196,15 @@ private:
     FS_MANUAL_ON, FS_MANUAL_OFF
     };
 
+    ISwitch Power1S[2];
+    ISwitchVectorProperty Power1SP;
+    ISwitch Power2S[2];
+    ISwitchVectorProperty Power2SP;
+    ISwitch Power3S[2];
+    ISwitchVectorProperty Power3SP;
+    INumber PWMN[2];
+    INumberVectorProperty PWMNP;    
+
     INumber PowerDataN[5];
     INumberVectorProperty PowerDataNP;
     enum
