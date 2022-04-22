@@ -603,6 +603,27 @@ bool IndiAstroLink4mini2::sensorRead()
             IDSetNumber(&CompensationValueNP, nullptr);
             IDSetSwitch(&CompensateNowSP, nullptr);
 
+            PWMN[0].value = std::stod(result[Q_PWM1]);
+            PWMN[1].value = std::stod(result[Q_PWM2]);
+            PWMNP.s = IPS_OK;
+            IDSetNumber(&PWMNP, nullptr);
+
+            if (Power1SP.s != IPS_OK || Power2SP.s != IPS_OK || Power3SP.s != IPS_OK)
+            {
+                Power1S[0].s = (std::stod(result[Q_OUT1]) > 0) ? ISS_ON : ISS_OFF;
+                Power1S[1].s = (std::stod(result[Q_OUT1]) == 0) ? ISS_ON : ISS_OFF;
+                Power1SP.s = IPS_OK;
+                IDSetSwitch(&Power1SP, nullptr);
+                Power2S[0].s = (std::stod(result[Q_OUT2]) > 0) ? ISS_ON : ISS_OFF;
+                Power2S[1].s = (std::stod(result[Q_OUT2]) == 0) ? ISS_ON : ISS_OFF;
+                Power2SP.s = IPS_OK;
+                IDSetSwitch(&Power2SP, nullptr);
+                Power3S[0].s = (std::stod(result[Q_OUT3]) > 0) ? ISS_ON : ISS_OFF;
+                Power3S[1].s = (std::stod(result[Q_OUT3]) == 0) ? ISS_ON : ISS_OFF;
+                Power3SP.s = IPS_OK;
+                IDSetSwitch(&Power3SP, nullptr);
+            }            
+
             PowerDataN[POW_REG].value = std::stod(result[Q_VREG]);
             PowerDataN[POW_VIN].value = std::stod(result[Q_VIN]);
             PowerDataN[POW_AH].value = std::stod(result[Q_AH]);
@@ -694,7 +715,6 @@ bool IndiAstroLink4mini2::updateSettings(const char *getCom, const char *setCom,
             for (const auto &piece : result)
                 concatSettings += piece + ":";
 
-            DEBUGF(INDI::Logger::DBG_SESSION, "Update %s", concatSettings.c_str());
             snprintf(cmd, ASTROLINK4_LEN, "%s", concatSettings.c_str());
             if (sendCommand(cmd, res))
                 return true;
