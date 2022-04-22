@@ -88,6 +88,8 @@ bool IndiAstroLink4mini2::Handshake()
         else
         {
             SetTimer(POLLTIME);
+            // Require update
+            FocuserSettingsNP.s = IPS_BUSY;
             return true;
         }
     }
