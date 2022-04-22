@@ -1,5 +1,5 @@
 # astrolink4mini2
-INDI driver for AstroLink 4 mini II device
+INDI driver for AstroLink 4 mini II device (under development)
 
 # Installing INDI server and libraries
 To start you need to download and install INDI environment. See [INDI page](http://indilib.org/download.html) for details. 
