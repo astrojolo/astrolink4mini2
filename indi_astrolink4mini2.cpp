@@ -594,6 +594,7 @@ bool IndiAstroLink4mini2::updateSettings(const char *getCom, const char *setCom,
             for (const auto &piece : result)
                 concatSettings += piece + ":";
 
+            DEBUGF(INDI::Logger::DBG_SESSION, "Update %s", concatSettings.c_str());
             snprintf(cmd, ASTROLINK4_LEN, "%s", concatSettings.c_str());
             if (sendCommand(cmd, res))
                 return true;
