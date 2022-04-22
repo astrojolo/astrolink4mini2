@@ -196,9 +196,17 @@ private:
     FS_MANUAL_ON, FS_MANUAL_OFF
     };
 
+    INumber PowerDataN[5];
+    INumberVectorProperty PowerDataNP;
+    enum
+    {
+    POW_VIN, POW_REG, POW_ITOT, POW_AH, POW_WH
+    };
+
     ISwitch BuzzerS[1];
     ISwitchVectorProperty BuzzerSP;
     
+    static constexpr const char *POWER_TAB {"Power"};
     static constexpr const char *ENVIRONMENT_TAB {"Environment"};
     static constexpr const char *SETTINGS_TAB {"Settings"};
 };

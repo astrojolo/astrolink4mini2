@@ -158,6 +158,14 @@ bool IndiAstroLink4mini2::initProperties()
     IUFillNumber(&FocusPosMMN[0], "FOC_POS_MM", "Position [mm]", "%.3f", 0.0, 200.0, 0.001, 0.0);
     IUFillNumberVector(&FocusPosMMNP, FocusPosMMN, 1, getDeviceName(), "FOC_POS_MM", "Position [mm]", FOCUS_TAB, IP_RO, 60, IPS_IDLE);
 
+    // Power readings
+    IUFillNumber(&PowerDataN[POW_VIN], "VIN", "Input voltage [V]", "%.1f", 0, 15, 10, 0);
+    IUFillNumber(&PowerDataN[POW_REG], "REG", "Regulated voltage [V]", "%.1f", 0, 15, 10, 0);
+    IUFillNumber(&PowerDataN[POW_ITOT], "ITOT", "Total current [A]", "%.1f", 0, 15, 10, 0);
+    IUFillNumber(&PowerDataN[POW_AH], "AH", "Energy consumed [Ah]", "%.1f", 0, 1000, 10, 0);
+    IUFillNumber(&PowerDataN[POW_WH], "WH", "Energy consumed [Wh]", "%.1f", 0, 10000, 10, 0);
+    IUFillNumberVector(&PowerDataNP, PowerDataN, 4, getDeviceName(), "POWER_DATA", "Power data", POWER_TAB, IP_RO, 60, IPS_IDLE);
+
     // Environment Group
     addParameter("WEATHER_TEMPERATURE", "Temperature (C)", -15, 35, 15);
     addParameter("WEATHER_HUMIDITY", "Humidity %", 0, 100, 15);
@@ -181,6 +189,7 @@ bool IndiAstroLink4mini2::updateProperties()
         defineProperty(&FocuserManualSP);
         defineProperty(&CompensationValueNP);
         defineProperty(&CompensateNowSP);
+        defineProperty(&PowerDataNP);
     }
     else
     {
@@ -190,6 +199,7 @@ bool IndiAstroLink4mini2::updateProperties()
         deleteProperty(FocuserCompModeSP.name);
         deleteProperty(FocuserManualSP.name);
         deleteProperty(FocusPosMMNP.name);
+        deleteProperty(PowerDataNP.name);
         FI::updateProperties();
         WI::updateProperties();
     }
@@ -468,6 +478,7 @@ bool IndiAstroLink4mini2::sensorRead()
         }
         IDSetNumber(&FocusPosMMNP, nullptr);
         IDSetNumber(&FocusAbsPosNP, nullptr);
+        PowerDataN[POW_ITOT].value = std::stod(result[Q_ITOT]);
 
         if (result.size() > 5)
         {
@@ -489,7 +500,14 @@ bool IndiAstroLink4mini2::sensorRead()
             CompensateNowS[0].s = (CompensationValueN[0].value != 0) ? ISS_OFF : ISS_ON;
             IDSetNumber(&CompensationValueNP, nullptr);
             IDSetSwitch(&CompensateNowSP, nullptr);
+
+            PowerDataN[POW_REG].value = std::stod(result[Q_REG]);
+            PowerDataN[POW_VIN].value = std::stod(result[Q_VIN]);
+            PowerDataN[POW_AH].value = std::stod(result[Q_AH]);
+            PowerDataN[POW_WH].value = std::stod(result[Q_WH]);            
         }
+        PowerDataNP.s = IPS_OK;
+        IDSetNumber(&PowerDataNP, nullptr);
     }
 
     // update settings data if was changed
