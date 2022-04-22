@@ -273,7 +273,7 @@ bool IndiAstroLink4mini2::ISNewNumber(const char *dev, const char *name, double 
             if (allOk)
             IUUpdateNumber(&PWMNP, values, names, n);
             IDSetNumber(&PWMNP, nullptr);
-            IDSetSwitch(&AutoPWMSP, nullptr);
+            //IDSetSwitch(&AutoPWMSP, nullptr);
             return true;
         }
 
@@ -315,7 +315,7 @@ bool IndiAstroLink4mini2::ISNewSwitch(const char *dev, const char *name, ISState
     {
         char cmd[ASTROLINK4_LEN] = {0};
         char res[ASTROLINK4_LEN] = {0};
-        
+
         // handle power line 1
         if (!strcmp(name, Power1SP.name))
         {
