@@ -174,6 +174,8 @@ bool IndiAstroLink4mini2::ISNewText(const char *dev, const char *name, char *tex
 
 bool IndiAstroLink4mini2::saveConfigItems(FILE *fp)
 {
+    IUSaveConfigSwitch(fp, &FocuserSelectSP);
+    FI::saveConfigItems(fp);
     INDI::DefaultDevice::saveConfigItems(fp);
     return true;
 }
