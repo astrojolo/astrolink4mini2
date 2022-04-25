@@ -194,7 +194,7 @@ bool IndiAstroLink4mini2::initProperties()
 
     IUFillSwitch(&StepperSelectS[STP_SEL_1], "STP_SEL_1", "Focuser 1", focSel1);
     IUFillSwitch(&StepperSelectS[STP_SEL_2], "STP_SEL_2", "Focuser 2", focSel2);
-    IUFillSwitchVector(&StepperSelectSP, StepperSelectS, 2, getDeviceName(), "FOC_SELECT", "Selected stepper", FOCUS_TAB, IP_RW, ISR_1OFMANY, 0, IPS_IDLE);     
+    IUFillSwitchVector(&StepperSelectSP, StepperSelectS, 2, getDeviceName(), "FOC_SELECT", "Selected stepper", SETTINGS_TAB, IP_RW, ISR_1OFMANY, 0, IPS_IDLE);     
 
 
     // Environment Group
