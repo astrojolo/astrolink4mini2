@@ -39,15 +39,13 @@ bool AstroLink4mini2::initProperties()
 
     addAuxControls();
 
-    ////////////////////////////////////////////////////////////////////////////
-    /// Serial Connection
-    ////////////////////////////////////////////////////////////////////////////
     serialConnection = new Connection::Serial(this);
     serialConnection->registerHandshake([&]()
-    {
-        return Handshake();
-    });
+                                        { return Handshake(); });
     registerConnection(serialConnection);
+
+    serialConnection->setDefaultPort("/dev/ttyUSB0");
+    serialConnection->setDefaultBaudRate(serialConnection->B_38400);
 
     return true;    
 }
