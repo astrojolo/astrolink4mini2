@@ -355,9 +355,10 @@ bool IndiAstroLink4mini2::readDevice()
             if (FocusReverseSP.s != IPS_OK)
             {
                 int index = focuserIndex > 0 ? U_FOC2_REV : U_FOC1_REV;
-                DEBUGF(INDI::Logger::DBG_SESSION, "Rev %s", result[index]);
+                DEBUGF(INDI::Logger::DBG_SESSION, "Rev %i %s", index, res);
                 FocusReverseS[0].s = (std::stoi(result[index]) == 0) ? ISS_ON : ISS_OFF;
                 FocusReverseS[1].s = (std::stoi(result[index]) > 0) ? ISS_ON : ISS_OFF;
+                FocusReverseSP.s = IPS_OK;
                 IDSetSwitch(&FocusReverseSP, nullptr);
             }     
         }
