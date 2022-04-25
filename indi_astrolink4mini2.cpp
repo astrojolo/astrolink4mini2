@@ -217,7 +217,7 @@ bool IndiAstroLink4mini2::updateProperties()
         defineProperty(&Power2SP);
         defineProperty(&Power3SP);
         defineProperty(&PWMNP);   
-        defineProperty(&FocuserSelectS);             
+        defineProperty(&FocuserSelectSP);             
     }
     else
     {
@@ -232,7 +232,7 @@ bool IndiAstroLink4mini2::updateProperties()
         deleteProperty(Power2SP.name);
         deleteProperty(Power3SP.name);    
         deleteProperty(PWMNP.name);     
-        deleteProperty(FOcuserSelectSP.name);       
+        deleteProperty(FocuserSelectSP.name);       
         FI::updateProperties();
         WI::updateProperties();
     }
