@@ -436,6 +436,20 @@ bool IndiAstroLink4mini2::saveConfigItems(FILE *fp)
     return true;
 }
 
+ bool IndiAstroLink4mini2::loadConfig(bool silent, const char *property)
+ {
+     bool result;
+  
+     if (property == nullptr)
+     {
+         result = INDI::DefaultDevice::loadConfig(silent, "FOCUS_SELECT");
+     }
+     else
+         result = INDI::DefaultDevice::loadConfig(silent, property);
+  
+     return result;
+ }
+
 //////////////////////////////////////////////////////////////////////
 /// Focuser interface
 //////////////////////////////////////////////////////////////////////
