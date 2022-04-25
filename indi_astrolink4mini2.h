@@ -153,7 +153,8 @@ private:
     char stopChar { 0xA };	// new line
     uint8_t focuserIndex = 0;
     bool readDevice();
-
+    bool updateSettings(const char * getCom, const char * setCom, int index, const char * value);
+    bool updateSettings(const char * getCom, const char * setCom, std::map<int, std::string> values);
     std::vector<std::string> split(const std::string &input, const std::string &regex);
     std::string doubleToStr(double val);
 

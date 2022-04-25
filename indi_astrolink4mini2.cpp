@@ -216,7 +216,16 @@ bool IndiAstroLink4mini2::SyncFocuser(uint32_t ticks)
 
 bool IndiAstroLink4mini2::SetFocuserMaxPosition(uint32_t ticks)
 {
-return true;
+    int index = focuserIndex > 0 ? U_FOC2_MAX : U_FOC1_MAX;
+    if (updateSettings("u", "U", index, std::to_string(ticks).c_str()))
+    {
+        FocusMaxPosNP.s = IPS_BUSY;
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 bool IndiAstroLink4mini2::SetFocuserBacklash(int32_t steps)
@@ -302,6 +311,19 @@ bool IndiAstroLink4mini2::readDevice()
         IDSetNumber(&FocusAbsPosNP, nullptr);
     }
 
+    // update settings data if was changed
+    if (FocusMaxPosNP.s != IPS_OK)
+    {
+        if (sendCommand("u", res))
+        {
+            std::vector<std::string> result = split(res, ":");
+            int index = focuserIndex > 0 ? U_FOC2_MAX : U_FOC1_MAX;
+            FocusMaxPosN[0].value = std::stod(result[index]);
+            FocusMaxPosNP.s = IPS_OK;
+            IDSetNumber(&FocusMaxPosNP, nullptr);
+        }
+    }    
+
     return true;
 }
 
@@ -324,3 +346,36 @@ std::string IndiAstroLink4mini2::doubleToStr(double val)
     sprintf(buf, "%.0f", val);
     return std::string(buf);
 }
+
+bool IndiAstroLink4mini2::updateSettings(const char *getCom, const char *setCom, int index, const char *value)
+{
+    std::map<int, std::string> values;
+    values[index] = value;
+    return updateSettings(getCom, setCom, values);
+}
+
+bool IndiAstroLink4mini2::updateSettings(const char *getCom, const char *setCom, std::map<int, std::string> values)
+{
+    char cmd[ASTROLINK4_LEN] = {0}, res[ASTROLINK4_LEN] = {0};
+    snprintf(cmd, ASTROLINK4_LEN, "%s", getCom);
+    if (sendCommand(cmd, res))
+    {
+        std::string concatSettings = "";
+        std::vector<std::string> result = split(res, ":");
+        if (result.size() >= values.size())
+        {
+            result[0] = setCom;
+            for (std::map<int, std::string>::iterator it = values.begin(); it != values.end(); ++it)
+                result[it->first] = it->second;
+
+            for (const auto &piece : result)
+                concatSettings += piece + ":";
+
+            snprintf(cmd, ASTROLINK4_LEN, "%s", concatSettings.c_str());
+            if (sendCommand(cmd, res))
+                return true;
+        }
+    }
+    return false;
+}
+
