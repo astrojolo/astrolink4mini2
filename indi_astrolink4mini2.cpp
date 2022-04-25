@@ -25,7 +25,7 @@
 #define ASTROLINK4_LEN 200
 #define ASTROLINK4_TIMEOUT 3
 
-#define POLLTIME 2000
+#define POLLTIME 500
 
 //////////////////////////////////////////////////////////////////////
 /// Delegates
@@ -159,6 +159,8 @@ bool IndiAstroLink4mini2::ISNewSwitch(const char *dev, const char *name, ISState
             IUUpdateSwitch(&FocuserSelectSP, states, names, n);
             IDSetSwitch(&FocuserSelectSP, nullptr);
             IDSetSwitch(&FocusReverseSP, nullptr);
+            IDSetNumber(&FocusMaxPosNP, nullptr);
+            IDSetNumber(&FocusAbsPosNP, nullptr);
             return true;
         }
 
@@ -356,8 +358,8 @@ bool IndiAstroLink4mini2::readDevice()
             if (FocusReverseSP.s != IPS_OK)
             {
                 int index = focuserIndex > 0 ? U_FOC2_REV : U_FOC1_REV;
-                FocusReverseS[0].s = (std::stoi(result[index]) == 0) ? ISS_ON : ISS_OFF;
-                FocusReverseS[1].s = (std::stoi(result[index]) > 0) ? ISS_ON : ISS_OFF;
+                FocusReverseS[0].s = (std::stoi(result[index]) > 0) ? ISS_ON : ISS_OFF;
+                FocusReverseS[1].s = (std::stoi(result[index]) == 0) ? ISS_ON : ISS_OFF;
                 FocusReverseSP.s = IPS_OK;
                 IDSetSwitch(&FocusReverseSP, nullptr);
             }     
@@ -392,7 +394,7 @@ std::string IndiAstroLink4mini2::doubleToStr(double val)
 
 bool IndiAstroLink4mini2::updateSettings(const char *getCom, const char *setCom, int index, const char *value)
 {
-    DEBUGF(INDI::Logger::DBG_SESSION, "Update %i %s %s %s", index, value, FocusReverseS[0].name, FocusReverseS[1].name);
+    //DEBUGF(INDI::Logger::DBG_SESSION, "Update %i %s %s %s", index, value, FocusReverseS[0].name, FocusReverseS[1].name);
     std::map<int, std::string> values;
     values[index] = value;
     return updateSettings(getCom, setCom, values);
