@@ -392,8 +392,7 @@ bool IndiAstroLink4mini2::ISNewSwitch(const char *dev, const char *name, ISState
         // Stepper select
         if (!strcmp(name, FocuserSelectSP.name))
         {
-            DEBUGF(INDI::Logger::DBG_SESSION, "Selected %i", names[0]);
-            selectedFocuser = (strcmp(FocuserSelectS[FOC_SEL_1].name, names[0])) ? 1 : 2;
+            selectedFocuser = (strcmp(FocuserSelectS[FOC_SEL_1].name, names[0])) ? 1 : 2)
             FocuserSelectSP.s = IPS_BUSY;
             IUUpdateSwitch(&FocuserSelectSP, states, names, n);
             IDSetSwitch(&FocuserSelectSP, nullptr);
@@ -433,6 +432,7 @@ bool IndiAstroLink4mini2::saveConfigItems(FILE *fp)
 {
     INDI::DefaultDevice::saveConfigItems(fp);
     FI::saveConfigItems(fp);
+    WI:saveConfigItems(fp);
     return true;
 }
 
@@ -578,7 +578,7 @@ bool IndiAstroLink4mini2::sensorRead()
 
         //sprintf(cmd, "C:0:%s", (strcmp(Power1S[0].name, names[0])) ? "0" : "1");
 
-        DEBUGF(INDI::Logger::DBG_SESSION, "Selected %i", selectedFocuser);
+        DEBUGF(INDI::Logger::DBG_SESSION, "Selected %s %s", FocuserSelectS[0].s, FocuserSelectS[1].s);
         
         float focuserPosition = std::stod(result[Q_FOC1_POS]);
         FocusAbsPosN[0].value = focuserPosition;
@@ -650,7 +650,6 @@ bool IndiAstroLink4mini2::sensorRead()
             PowerDataN[POW_WH].value = std::stod(result[Q_WH]);            
         }
         PowerDataNP.s = IPS_OK;
-        FocuserSelectSP.s = IPS_OK;
         IDSetNumber(&PowerDataNP, nullptr);
     }
 
