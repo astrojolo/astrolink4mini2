@@ -344,6 +344,7 @@ bool IndiAstroLink4mini2::readDevice()
     {
         if (sendCommand("u", res))
         {
+            std::vector<std::string> result = split(res, ":");
             if (FocusMaxPosNP.s != IPS_OK)
             {
                 int index = focuserIndex > 0 ? U_FOC2_MAX : U_FOC1_MAX;
