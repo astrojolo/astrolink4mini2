@@ -166,7 +166,6 @@ bool IndiAstroLink4mini2::saveConfigItems(FILE *fp)
 //////////////////////////////////////////////////////////////////////
 IPState IndiAstroLink4mini2::MoveAbsFocuser(uint32_t targetTicks)
 {
-    DEBUGF(INDI::Logger::DBG_SESSION, "Move to  %u", targetTicks);
     char cmd[ASTROLINK4_LEN] = {0}, res[ASTROLINK4_LEN] = {0};
     snprintf(cmd, ASTROLINK4_LEN, "R:%i:%u", focuserIndex,  targetTicks);
     return (sendCommand(cmd, res)) ? IPS_BUSY : IPS_ALERT;
