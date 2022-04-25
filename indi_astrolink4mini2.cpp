@@ -392,9 +392,8 @@ bool IndiAstroLink4mini2::ISNewSwitch(const char *dev, const char *name, ISState
         // Stepper select
         if (!strcmp(name, FocuserSelectSP.name))
         {
-            DEBUGF(INDI::Logger::DBG_SESSION, "Selected %i", names[0]);
-            selectedFocuser = (strcmp(FocuserSelectS[FOC_SEL_1].name, names[0])) ? 1 : 2;
-            FocuserSelectSP.s = IPS_BUSY;
+            selectedFocuser = (strcmp(FocuserSelectS[FOC_SEL_2].name, names[0])) ? 1 : 2;
+            FocuserSelectSP.s = IPS_OK;
             IUUpdateSwitch(&FocuserSelectSP, states, names, n);
             IDSetSwitch(&FocuserSelectSP, nullptr);
             return true;
@@ -651,7 +650,6 @@ bool IndiAstroLink4mini2::sensorRead()
             PowerDataN[POW_WH].value = std::stod(result[Q_WH]);            
         }
         PowerDataNP.s = IPS_OK;
-        FocuserSelectSP.s = IPS_OK;
         IDSetNumber(&PowerDataNP, nullptr);
     }
 
