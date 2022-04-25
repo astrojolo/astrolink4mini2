@@ -112,7 +112,7 @@ bool IndiAstroLink4mini2::initProperties()
 
     IUFillSwitch(&FocuserSelectS[0], "FOC_SEL_1", "Focuser 1", ISS_ON);
     IUFillSwitch(&FocuserSelectS[1], "FOC_SEL_2", "Focuser 2", ISS_OFF);
-    IUFillSwitchVector(&FocuserSelectSP, FocuserSelectS, 2, getDeviceName(), "FOCUSER_SELECT", "Focuser select", SETTINGS_TAB, IP_RW, ISR_1OFMANY, 60, IPS_IDLE);
+    IUFillSwitchVector(&FocuserSelectSP, FocuserSelectS, 2, getDeviceName(), "FOCUSER_SELECT", "Focuser select", FOCUSER_TAB, IP_RW, ISR_1OFMANY, 60, IPS_IDLE);
 
 
     return true;
@@ -155,7 +155,7 @@ bool IndiAstroLink4mini2::ISNewSwitch(const char *dev, const char *name, ISState
         if (!strcmp(name, FocuserSelectSP.name))
         {
             focuserIndex = (strcmp(FocuserSelectS[0].name, names[0])) ? 1 : 0;
-            FocuserSelectSP.s = FocusMaxPosNP.s = IPS_BUSY;
+            FocuserSelectSP.s = FocusMaxPosNP.s = FocusReverseSP.s = IPS_BUSY;
             IUUpdateSwitch(&FocuserSelectSP, states, names, n);
             IDSetSwitch(&FocuserSelectSP, nullptr);
             return true;
@@ -360,7 +360,8 @@ bool IndiAstroLink4mini2::readDevice()
                 IDSetSwitch(&FocusReverseSP, nullptr);
             }     
         }
-
+        FocuserSelectSP.s = IPS_OK;
+        IDSetSwitch(&FocuserSelectSP, nullptr);
     }
   
 
