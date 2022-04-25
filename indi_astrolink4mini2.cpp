@@ -575,7 +575,7 @@ bool IndiAstroLink4mini2::sensorRead()
         std::vector<std::string> result = split(res, ":");
         result.erase(result.begin());
 
-        //DEBUGF(INDI::Logger::DBG_SESSION, "Selected %i", selectedFocuser);
+        DEBUGF(INDI::Logger::DBG_SESSION, "Selected %i", selectedFocuser);
         
         float focuserPosition = std::stod(result[selectedFocuser == 2 ? Q_FOC2_POS : Q_FOC1_POS]);
         FocusAbsPosN[0].value = focuserPosition;
