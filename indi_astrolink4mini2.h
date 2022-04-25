@@ -149,7 +149,7 @@ private:
     int PortFD = -1;
     Connection::Serial *serialConnection { nullptr };
     char stopChar { 0xA };	// new line
-    uint8_t focuserIndex = 0;
+    int getFocuserIndex();
     bool readDevice();
     bool updateSettings(const char * getCom, const char * setCom, int index, const char * value);
     bool updateSettings(const char * getCom, const char * setCom, std::map<int, std::string> values);

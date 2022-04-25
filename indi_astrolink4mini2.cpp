@@ -189,7 +189,7 @@ bool IndiAstroLink4mini2::saveConfigItems(FILE *fp)
 IPState IndiAstroLink4mini2::MoveAbsFocuser(uint32_t targetTicks)
 {
     char cmd[ASTROLINK4_LEN] = {0}, res[ASTROLINK4_LEN] = {0};
-    snprintf(cmd, ASTROLINK4_LEN, "R:%i:%u", focuserIndex,  targetTicks);
+    snprintf(cmd, ASTROLINK4_LEN, "R:%i:%u", getFocuserIndex(),  targetTicks);
     return (sendCommand(cmd, res)) ? IPS_BUSY : IPS_ALERT;
 }
 
@@ -201,13 +201,13 @@ IPState IndiAstroLink4mini2::MoveRelFocuser(FocusDirection dir, uint32_t ticks)
 bool IndiAstroLink4mini2::AbortFocuser()
 {
     char cmd[ASTROLINK4_LEN] = {0}, res[ASTROLINK4_LEN] = {0};
-    snprintf(cmd, ASTROLINK4_LEN, "H:%i", focuserIndex);
+    snprintf(cmd, ASTROLINK4_LEN, "H:%i", getFocuserIndex());
     return (sendCommand(cmd, res));
 }
 
 bool IndiAstroLink4mini2::ReverseFocuser(bool enabled)
 {
-    int index = focuserIndex > 0 ? U_FOC2_REV : U_FOC1_REV;
+    int index = getFocuserIndex() > 0 ? U_FOC2_REV : U_FOC1_REV;
     if (updateSettings("u", "U", index, (enabled) ? "1" : "0"))
     {
         FocusReverseSP.s = IPS_BUSY;
@@ -222,7 +222,7 @@ bool IndiAstroLink4mini2::ReverseFocuser(bool enabled)
 bool IndiAstroLink4mini2::SyncFocuser(uint32_t ticks)
 {
     char cmd[ASTROLINK4_LEN] = {0}, res[ASTROLINK4_LEN] = {0};
-    snprintf(cmd, ASTROLINK4_LEN, "P:%i:%u", focuserIndex, ticks);
+    snprintf(cmd, ASTROLINK4_LEN, "P:%i:%u", getFocuserIndex(), ticks);
     if (sendCommand(cmd, res))
     {
         FocusAbsPosNP.s = IPS_BUSY;
@@ -237,7 +237,7 @@ bool IndiAstroLink4mini2::SyncFocuser(uint32_t ticks)
 
 bool IndiAstroLink4mini2::SetFocuserMaxPosition(uint32_t ticks)
 {
-    int index = focuserIndex > 0 ? U_FOC2_MAX : U_FOC1_MAX;
+    int index = getFocuserIndex() > 0 ? U_FOC2_MAX : U_FOC1_MAX;
     if (updateSettings("u", "U", index, std::to_string(ticks).c_str()))
     {
         FocusMaxPosNP.s = IPS_BUSY;
@@ -327,8 +327,8 @@ bool IndiAstroLink4mini2::readDevice()
 
         //DEBUGF(INDI::Logger::DBG_SESSION, "Selected %i", selectedFocuser);
         
-        int focuserPosition = std::stoi(result[focuserIndex == 1 ? Q_FOC2_POS : Q_FOC1_POS]);
-        int stepsToGo = std::stod(result[focuserIndex == 1 ? Q_FOC2_TO_GO : Q_FOC1_TO_GO]);
+        int focuserPosition = std::stoi(result[getFocuserIndex() == 1 ? Q_FOC2_POS : Q_FOC1_POS]);
+        int stepsToGo = std::stod(result[getFocuserIndex() == 1 ? Q_FOC2_TO_GO : Q_FOC1_TO_GO]);
         FocusAbsPosN[0].value = focuserPosition;
         if (stepsToGo == 0)
         {
@@ -350,14 +350,14 @@ bool IndiAstroLink4mini2::readDevice()
             std::vector<std::string> result = split(res, ":");
             if (FocusMaxPosNP.s != IPS_OK)
             {
-                int index = focuserIndex > 0 ? U_FOC2_MAX : U_FOC1_MAX;
+                int index = getFocuserIndex() > 0 ? U_FOC2_MAX : U_FOC1_MAX;
                 FocusMaxPosN[0].value = std::stod(result[index]);
                 FocusMaxPosNP.s = IPS_OK;
                 IDSetNumber(&FocusMaxPosNP, nullptr);
             }    
             if (FocusReverseSP.s != IPS_OK)
             {
-                int index = focuserIndex > 0 ? U_FOC2_REV : U_FOC1_REV;
+                int index = getFocuserIndex() > 0 ? U_FOC2_REV : U_FOC1_REV;
                 FocusReverseS[0].s = (std::stoi(result[index]) > 0) ? ISS_ON : ISS_OFF;
                 FocusReverseS[1].s = (std::stoi(result[index]) == 0) ? ISS_ON : ISS_OFF;
                 FocusReverseSP.s = IPS_OK;
@@ -394,7 +394,6 @@ std::string IndiAstroLink4mini2::doubleToStr(double val)
 
 bool IndiAstroLink4mini2::updateSettings(const char *getCom, const char *setCom, int index, const char *value)
 {
-    //DEBUGF(INDI::Logger::DBG_SESSION, "Update %i %s %s %s", index, value, FocusReverseS[0].name, FocusReverseS[1].name);
     std::map<int, std::string> values;
     values[index] = value;
     return updateSettings(getCom, setCom, values);
@@ -423,5 +422,10 @@ bool IndiAstroLink4mini2::updateSettings(const char *getCom, const char *setCom,
         }
     }
     return false;
+}
+
+int IndiAstroLink4mini2::getFocuserIndex()
+{
+    return FocuserSelectS[0].s == IPS_OK ? 0 : 1;
 }
 
