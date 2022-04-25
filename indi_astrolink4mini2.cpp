@@ -62,7 +62,6 @@ void ISSnoopDevice(XMLEle *root)
 //////////////////////////////////////////////////////////////////////
 IndiAstroLink4mini2::IndiAstroLink4mini2() : FI(this), WI(this)
 {
-        purgeConfig();
     setVersion(VERSION_MAJOR, VERSION_MINOR);
 }
 
@@ -393,7 +392,7 @@ bool IndiAstroLink4mini2::ISNewSwitch(const char *dev, const char *name, ISState
         // Stepper select
         if (!strcmp(name, FocuserSelectSP.name))
         {
-            selectedFocuser = (strcmp(FocuserSelectS[FOC_SEL_1].name, names[0])) ? 1 : 2;
+            selectedFocuser = (strcmp(FocuserSelectS[FOC_SEL_1].name, names[0])) ? 2 : 1;
             FocuserSelectSP.s = IPS_BUSY;
             IUUpdateSwitch(&FocuserSelectSP, states, names, n);
             IDSetSwitch(&FocuserSelectSP, nullptr);
@@ -576,11 +575,9 @@ bool IndiAstroLink4mini2::sensorRead()
         std::vector<std::string> result = split(res, ":");
         result.erase(result.begin());
 
-        //sprintf(cmd, "C:0:%s", (strcmp(Power1S[0].name, names[0])) ? "0" : "1");
-
-        DEBUGF(INDI::Logger::DBG_SESSION, "Selected %s %s", FocuserSelectS[0].s, FocuserSelectS[1].s);
+        DEBUGF(INDI::Logger::DBG_SESSION, "Selected %i", selectedFocuser);
         
-        float focuserPosition = std::stod(result[Q_FOC1_POS]);
+        float focuserPosition = std::stod(result[selectedFocuser == 2 ? Q_FOC2_POS : Q_FOC1_POS]);
         FocusAbsPosN[0].value = focuserPosition;
         FocusPosMMN[0].value = focuserPosition * FocuserSettingsN[FS_STEP_SIZE].value / 1000.0;
         float stepsToGo = std::stod(result[Q_FOC1_TO_GO]);
