@@ -110,6 +110,11 @@ bool IndiAstroLink4mini2::initProperties()
     serialConnection->setDefaultPort("/dev/ttyUSB0");
     serialConnection->setDefaultBaudRate(serialConnection->B_38400);
 
+    IUFillSwitch(&FocuserSelectS[0], "FOC_SEL_1", "Focuser 1", ISS_ON);
+    IUFillSwitch(&FocuserSelectS[1], "FOC_SEL_2", "Focuser 2", ISS_OFF);
+    IUFillSwitchVector(&FocuserSelectSP, FocuserSelectS, 2, getDeviceName(), "FOCUSER_SELECT", "Focuser select", SETTINGS_TAB, IP_RW, ISR_1OFMANY, 60, IPS_IDLE);
+
+
     return true;
 }
 
@@ -121,9 +126,11 @@ bool IndiAstroLink4mini2::updateProperties()
     if (isConnected())
     {
          FI::updateProperties();
+         defineProperty(&FocuserSelectSP);
     }
     else
     {
+        deleteProperty(FocuserSelectSP.name);
         FI::updateProperties();
     }
 
@@ -143,7 +150,17 @@ bool IndiAstroLink4mini2::ISNewNumber(const char *dev, const char *name, double 
 bool IndiAstroLink4mini2::ISNewSwitch(const char *dev, const char *name, ISState *states, char *names[], int n)
 {
     if (dev && !strcmp(dev, getDeviceName()))
-    {    
+    {
+        // Stepper select
+        if (!strcmp(name, FocuserSelectSP.name))
+        {
+            focuserIndex = (strcmp(FocuserSelectS[0].name, names[0])) ? 1 : 0;
+            FocuserSelectSP.s = IPS_BUSY;
+            IUUpdateSwitch(&FocuserSelectSP, states, names, n);
+            IDSetSwitch(&FocuserSelectSP, nullptr);
+            return true;
+        }
+
         if (strstr(name, "FOCUS"))
             return FI::processSwitch(dev, name, states, names, n);  
     }  
@@ -278,7 +295,7 @@ bool IndiAstroLink4mini2::readDevice()
 
         //DEBUGF(INDI::Logger::DBG_SESSION, "Selected %i", selectedFocuser);
         
-        float focuserPosition = std::stod(result[focuserIndex == 2 ? Q_FOC2_POS : Q_FOC1_POS]);
+        float focuserPosition = std::stod(result[focuserIndex == 1 ? Q_FOC2_POS : Q_FOC1_POS]);
         FocusAbsPosN[0].value = focuserPosition;
         IDSetNumber(&FocusAbsPosNP, nullptr);
     }

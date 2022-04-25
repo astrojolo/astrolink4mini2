@@ -156,6 +156,9 @@ private:
 
     std::vector<std::string> split(const std::string &input, const std::string &regex);
     std::string doubleToStr(double val);
+
+    ISwitch FocuserSelectS[1];
+    ISwitchVectorProperty FocuserSelectSP;
     
     static constexpr const char *POWER_TAB {"Power"};
     static constexpr const char *ENVIRONMENT_TAB {"Environment"};
