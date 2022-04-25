@@ -31,7 +31,7 @@
 
 #define ASTROLINK_LEN       200
 #define POLLTIME            500
-#define ASTROLINK4_TIMEOUT  3
+#define ASTROLINK_TIMEOUT   3
 
 //////////////////////////////////////////////////////////////////////
 /// Delegates
@@ -150,7 +150,7 @@ void AstroLink4mini2::TimerHit()
 bool AstroLink4mini2::sendCommand(const char *cmd, char *res)
 {
     int nbytes_read = 0, nbytes_written = 0, tty_rc = 0;
-    char command[ASTROLINK4_LEN];
+    char command[ASTROLINK_LEN];
 
     if (isSimulation())
     {
@@ -182,7 +182,7 @@ bool AstroLink4mini2::sendCommand(const char *cmd, char *res)
             return true;
         }
 
-        if ((tty_rc = tty_nread_section(PortFD, res, ASTROLINK4_LEN, stopChar, ASTROLINK4_TIMEOUT, &nbytes_read)) != TTY_OK || nbytes_read == 1)
+        if ((tty_rc = tty_nread_section(PortFD, res, ASTROLINK_LEN, stopChar, ASTROLINK_TIMEOUT, &nbytes_read)) != TTY_OK || nbytes_read == 1)
             return false;
 
         tcflush(PortFD, TCIOFLUSH);
