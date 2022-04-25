@@ -18,17 +18,6 @@
 #include "indi_astrolink4mini2.h"
 
 #include "indicom.h"
-#include "connectionplugins/connectionserial.h"
-
-#include <memory>
-#include <regex>
-#include <termios.h>
-#include <cstring>
-#include <sys/ioctl.h>
-#include <chrono>
-#include <math.h>
-#include <iomanip>
-
 
 //////////////////////////////////////////////////////////////////////
 /// Delegates

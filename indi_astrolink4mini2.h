@@ -15,12 +15,22 @@
  the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  Boston, MA 02110-1301, USA.
 *******************************************************************************/
-#pragma once
+#include <string>
+#include <iostream>
+#include <stdio.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <termios.h>
+#include <memory>
+#include <regex>
+#include <cstring>
+#include <map>
+#include <sstream>
 
-#include "defaultdevice.h"
-#include "indifocuserinterface.h"
-#include "indiweatherinterface.h"
-#include <stdint.h>
+#include <defaultdevice.h>
+#include <indifocuserinterface.h>
+#include <indiweatherinterface.h>
+#include <connectionplugins/connectionserial.h>
 
 namespace Connection
 {
