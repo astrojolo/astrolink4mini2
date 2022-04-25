@@ -186,9 +186,16 @@ bool IndiAstroLink4mini2::initProperties()
     IUFillNumberVector(&PWMNP, PWMN, 2, getDeviceName(), "PWM", "PWM", POWER_TAB, IP_RW, 60, IPS_IDLE);    
 
     // Select focuser
-    IUFillSwitch(&StepperSelectS[STP_SEL_1], "STP_SEL_1", "Focuser 1", ISS_ON);
-    IUFillSwitch(&StepperSelectS[STP_SEL_2], "STP_SEL_2", "Focuser 2", ISS_OFF);
+    ISState focSel1 = ISS_ON;
+    IUGetConfigSwitch(getDeviceName(), StepperSelectSP.name, StepperSelectS[STP_SEL_1].name, &focSel1);
+
+    ISState focSel2 = ISS_OFF;
+    IUGetConfigSwitch(getDeviceName(), AutoPWMDefaultOnSP.name, AutoPWMDefaultOnS[STP_SEL_2].name, &focSel2);
+
+    IUFillSwitch(&StepperSelectS[STP_SEL_1], "STP_SEL_1", "Focuser 1", focSel1);
+    IUFillSwitch(&StepperSelectS[STP_SEL_2], "STP_SEL_2", "Focuser 2", focSel2);
     IUFillSwitchVector(&StepperSelectSP, StepperSelectS, 2, getDeviceName(), "FOC_SELECT", "Selected stepper", FOCUS_TAB, IP_RW, ISR_1OFMANY, 0, IPS_IDLE);     
+
 
     // Environment Group
     addParameter("WEATHER_TEMPERATURE", "Temperature (C)", -15, 35, 15);
