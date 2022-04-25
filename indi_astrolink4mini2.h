@@ -197,12 +197,9 @@ private:
     FS_MANUAL_ON, FS_MANUAL_OFF
     };
 
-    ISwitch FocuserSelectS[2];
-    ISwitchVectorProperty FocuserSelectSP;
-    enum
-    {
-    FOC_SEL_1, FOC_SEL_2
-    };
+    ISwitch StepperSelectS[2];
+    ISwitchVectorProperty StepperSelectSP;
+    enum {STP_SEL_1, STP_SEL_2};
 
     ISwitch Power1S[2];
     ISwitchVectorProperty Power1SP;
