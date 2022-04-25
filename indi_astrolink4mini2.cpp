@@ -426,6 +426,6 @@ bool IndiAstroLink4mini2::updateSettings(const char *getCom, const char *setCom,
 
 int IndiAstroLink4mini2::getFocuserIndex()
 {
-    return FocuserSelectS[0].s == IPS_OK ? 0 : 1;
+    return FocuserSelectS[0].s == ISS_ON ? 0 : 1;
 }
 
