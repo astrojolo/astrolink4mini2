@@ -160,8 +160,8 @@ bool IndiAstroLink4mini2::initProperties()
     IUFillNumber(&FocusPosMMN[0], "FOC_POS_MM", "Position [mm]", "%.3f", 0.0, 200.0, 0.001, 0.0);
     IUFillNumberVector(&FocusPosMMNP, FocusPosMMN, 1, getDeviceName(), "FOC_POS_MM", "Position [mm]", FOCUS_TAB, IP_RO, 60, IPS_IDLE);
 
-    IUFillSwitch(&FocuserSelectS[0], "FOC_SEL_1", "Focuser 1", ISS_OFF);
-    IUFillSwitch(&FocuserSelectS[1], "FOC_SEL_2", "Focuser 2", ISS_ON);
+    IUFillSwitch(&FocuserSelectS[0], "FOC_SEL_1", "Focuser 1", ISS_ON);
+    IUFillSwitch(&FocuserSelectS[1], "FOC_SEL_2", "Focuser 2", ISS_OFF);
     IUFillSwitchVector(&FocuserSelectSP, FocuserSelectS, 2, getDeviceName(), "FOC_SELECT", "Selected stepper", FOCUS_TAB, IP_RW, ISR_1OFMANY, 0, IPS_IDLE); 
 
     // Power readings
@@ -568,7 +568,7 @@ bool IndiAstroLink4mini2::sensorRead()
 
         //sprintf(cmd, "C:0:%s", (strcmp(Power1S[0].name, names[0])) ? "0" : "1");
 
-        DEBUGF(INDI::Logger::DBG_SESSION, "Selected %s %s", FocuserSelectS[0].name, FocuserSelectS[1].name);
+        DEBUGF(INDI::Logger::DBG_SESSION, "Selected %s %s", FocuserSelectS[0].value, FocuserSelectS[1].value);
         
         float focuserPosition = std::stod(result[Q_FOC1_POS]);
         FocusAbsPosN[0].value = focuserPosition;
