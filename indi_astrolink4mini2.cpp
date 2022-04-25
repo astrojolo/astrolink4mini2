@@ -26,7 +26,7 @@
 #include <cstring>
 #include <sys/ioctl.h>
 #include <chrono>
-#include <src/math.h>
+#include <math.h>
 #include <iomanip>
 
 //////////////////////////////////////////////////////////////////////
