@@ -22,7 +22,7 @@
 //////////////////////////////////////////////////////////////////////
 /// Delegates
 //////////////////////////////////////////////////////////////////////
-std::unique_ptr<IndiAstroLink4mini2> mini2(new IndiAstroLink4mini2());
+std::unique_ptr<AstroLink4mini2> mini2(new AstroLink4mini2());
 
 AstroLink4mini2::AstroLink4mini2()
 {
@@ -41,7 +41,9 @@ bool AstroLink4mini2::initProperties()
 
     serialConnection = new Connection::Serial(this);
     serialConnection->registerHandshake([&]()
-                                        { return Handshake(); });
+    { 
+        return Handshake(); 
+     });
     registerConnection(serialConnection);
 
     serialConnection->setDefaultPort("/dev/ttyUSB0");
