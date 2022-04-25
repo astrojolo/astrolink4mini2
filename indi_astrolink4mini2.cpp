@@ -204,7 +204,16 @@ bool IndiAstroLink4mini2::AbortFocuser()
 
 bool IndiAstroLink4mini2::ReverseFocuser(bool enabled)
 {
-    return true;
+    int index = focuserIndex > 0 ? U_FOC2_REV : U_FOC1_REV;
+    if (updateSettings("u", "U", index, (enabled) ? "1" : "0"))
+    {
+        FocusReverseSP.s = IPS_BUSY;
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 bool IndiAstroLink4mini2::SyncFocuser(uint32_t ticks)
@@ -342,6 +351,17 @@ bool IndiAstroLink4mini2::readDevice()
             IDSetNumber(&FocusMaxPosNP, nullptr);
         }
     }    
+    if (FocusReverseSP.s != IPS_OK)
+    {
+        if (sendCommand("u", res))
+        {
+            std::vector<std::string> result = split(res, ":");
+            int index = focuserIndex > 0 ? U_FOC2_REV : U_FOC1_REV;
+            FocusReverseS[0].s = (std::stoi(result[index]) == 0) ? ISS_ON : ISS_OFF;
+            FocusReverseS[1].s = (std::stoi(result[index]) > 0) ? ISS_ON : ISS_OFF;
+            IDSetNumber(&FocusReverseSP, nullptr);
+        }
+    }       
 
     return true;
 }
