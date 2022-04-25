@@ -392,7 +392,7 @@ std::string IndiAstroLink4mini2::doubleToStr(double val)
 
 bool IndiAstroLink4mini2::updateSettings(const char *getCom, const char *setCom, int index, const char *value)
 {
-    DEBUGF(INDI::Logger::DBG_SESSION, "Update %i %s", index, value);
+    DEBUGF(INDI::Logger::DBG_SESSION, "Update %i %s %s %s", index, value, FocusReverseS[0].name, FocusReverseS[1].name);
     std::map<int, std::string> values;
     values[index] = value;
     return updateSettings(getCom, setCom, values);

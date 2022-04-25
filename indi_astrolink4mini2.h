@@ -109,8 +109,6 @@
 #define U_OVERTIME          39
 #define U_COMPSENSOR        40
 
-#define POLLTIME            500
-
 namespace Connection
 {
 class Serial;
