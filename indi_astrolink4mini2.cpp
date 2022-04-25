@@ -340,28 +340,28 @@ bool IndiAstroLink4mini2::readDevice()
     }
 
     // update settings data if was changed
-    if (FocusMaxPosNP.s != IPS_OK)
+    if(FocusMaxPosNP.s != IPS_OK || FocusReverseSP.s != IPS_OK)
     {
         if (sendCommand("u", res))
         {
-            std::vector<std::string> result = split(res, ":");
-            int index = focuserIndex > 0 ? U_FOC2_MAX : U_FOC1_MAX;
-            FocusMaxPosN[0].value = std::stod(result[index]);
-            FocusMaxPosNP.s = IPS_OK;
-            IDSetNumber(&FocusMaxPosNP, nullptr);
+            if (FocusMaxPosNP.s != IPS_OK)
+            {
+                int index = focuserIndex > 0 ? U_FOC2_MAX : U_FOC1_MAX;
+                FocusMaxPosN[0].value = std::stod(result[index]);
+                FocusMaxPosNP.s = IPS_OK;
+                IDSetNumber(&FocusMaxPosNP, nullptr);
+            }    
+            if (FocusReverseSP.s != IPS_OK)
+            {
+                int index = focuserIndex > 0 ? U_FOC2_REV : U_FOC1_REV;
+                FocusReverseS[0].s = (std::stoi(result[index]) == 0) ? ISS_ON : ISS_OFF;
+                FocusReverseS[1].s = (std::stoi(result[index]) > 0) ? ISS_ON : ISS_OFF;
+                IDSetSwitch(&FocusReverseSP, nullptr);
+            }     
         }
-    }    
-    if (FocusReverseSP.s != IPS_OK)
-    {
-        if (sendCommand("u", res))
-        {
-            std::vector<std::string> result = split(res, ":");
-            int index = focuserIndex > 0 ? U_FOC2_REV : U_FOC1_REV;
-            FocusReverseS[0].s = (std::stoi(result[index]) == 0) ? ISS_ON : ISS_OFF;
-            FocusReverseS[1].s = (std::stoi(result[index]) > 0) ? ISS_ON : ISS_OFF;
-            IDSetSwitch(&FocusReverseSP, nullptr);
-        }
-    }       
+
+    }
+  
 
     return true;
 }
