@@ -62,6 +62,7 @@ void ISSnoopDevice(XMLEle *root)
 //////////////////////////////////////////////////////////////////////
 IndiAstroLink4mini2::IndiAstroLink4mini2() : FI(this), WI(this)
 {
+        purgeConfig();
     setVersion(VERSION_MAJOR, VERSION_MINOR);
 }
 
@@ -432,7 +433,6 @@ bool IndiAstroLink4mini2::saveConfigItems(FILE *fp)
 {
     INDI::DefaultDevice::saveConfigItems(fp);
     FI::saveConfigItems(fp);
-    WI:saveConfigItems(fp);
     return true;
 }
 
