@@ -166,6 +166,7 @@ private:
     bool backlashEnabled = false;
     int32_t backlashSteps = 0;
     bool requireBacklashReturn = false;
+    int selectedFocuser = 1;
 
     INumber FocusPosMMN[1];
     INumberVectorProperty FocusPosMMNP;
@@ -198,6 +199,10 @@ private:
 
     ISwitch FocuserSelectS[2];
     ISwitchVectorProperty FocuserSelectSP;
+    enum
+    {
+    FOC_SEL_1, FOC_SEL_2
+    };
 
     ISwitch Power1S[2];
     ISwitchVectorProperty Power1SP;
