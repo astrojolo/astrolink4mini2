@@ -53,4 +53,4 @@ class AstroLink4mini2 : public INDI::DefaultDevice//, public INDI::FocuserInterf
 
         static constexpr const uint8_t ASTROLINK_LEN {200};
 
-}
+};
