@@ -15,6 +15,9 @@
  the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  Boston, MA 02110-1301, USA.
 *******************************************************************************/
+#ifndef ASTROLINK4_H
+#define ASTROLINK4_H
+
 #include <string>
 #include <iostream>
 #include <stdio.h>
@@ -64,3 +67,5 @@ class AstroLink4mini2 : public INDI::DefaultDevice//, public INDI::FocuserInterf
         static constexpr const uint8_t ASTROLINK_LEN {200};
 
 }
+
+#endif
