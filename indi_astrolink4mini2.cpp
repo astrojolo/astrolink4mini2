@@ -160,10 +160,6 @@ bool IndiAstroLink4mini2::initProperties()
     IUFillNumber(&FocusPosMMN[0], "FOC_POS_MM", "Position [mm]", "%.3f", 0.0, 200.0, 0.001, 0.0);
     IUFillNumberVector(&FocusPosMMNP, FocusPosMMN, 1, getDeviceName(), "FOC_POS_MM", "Position [mm]", FOCUS_TAB, IP_RO, 60, IPS_IDLE);
 
-    IUFillSwitch(&FocuserSelectS[FOC_SEL_1], "FOC_SEL_1", "Focuser 1", ISS_ON);
-    IUFillSwitch(&FocuserSelectS[FOC_SEL_2], "FOC_SEL_2", "Focuser 2", ISS_OFF);
-    IUFillSwitchVector(&FocuserSelectSP, FocuserSelectS, 2, getDeviceName(), "FOC_SELECT", "Selected stepper", FOCUS_TAB, IP_RW, ISR_1OFMANY, 0, IPS_IDLE); 
-
     // Power readings
     IUFillNumber(&PowerDataN[POW_VIN], "VIN", "Input voltage [V]", "%.1f", 0, 15, 10, 0);
     IUFillNumber(&PowerDataN[POW_REG], "REG", "Regulated voltage [V]", "%.1f", 0, 15, 10, 0);
@@ -188,6 +184,11 @@ bool IndiAstroLink4mini2::initProperties()
     IUFillNumber(&PWMN[0], "PWM1_VAL", "A", "%3.0f", 0, 100, 10, 0);
     IUFillNumber(&PWMN[1], "PWM2_VAL", "B", "%3.0f", 0, 100, 10, 0);
     IUFillNumberVector(&PWMNP, PWMN, 2, getDeviceName(), "PWM", "PWM", POWER_TAB, IP_RW, 60, IPS_IDLE);    
+
+    // Select focuser
+    IUFillSwitch(&FocuserSelectS[FOC_SEL_1], "FOC_SEL_1", "Focuser 1", ISS_ON);
+    IUFillSwitch(&FocuserSelectS[FOC_SEL_2], "FOC_SEL_2", "Focuser 2", ISS_OFF);
+    IUFillSwitchVector(&FocuserSelectSP, FocuserSelectS, 2, getDeviceName(), "FOC_SELECT", "Selected stepper", FOCUS_TAB, IP_RW, ISR_1OFMANY, 0, IPS_IDLE);     
 
     // Environment Group
     addParameter("WEATHER_TEMPERATURE", "Temperature (C)", -15, 35, 15);
