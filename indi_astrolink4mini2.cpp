@@ -343,7 +343,7 @@ bool IndiAstroLink4mini2::readDevice()
     }
 
     // update settings data if was changed
-    if(FocusMaxPosNP.s != IPS_OK || FocusReverseSP.s != IPS_OK)
+    if(FocusMaxPosNP.s != IPS_OK || FocusReverseSP.s != IPS_OK || FocuserSelectSP.s != IPS_OK)
     {
         if (sendCommand("u", res))
         {
