@@ -190,7 +190,7 @@ bool IndiAstroLink4mini2::initProperties()
     IUGetConfigSwitch(getDeviceName(), StepperSelectSP.name, StepperSelectS[STP_SEL_1].name, &focSel1);
 
     ISState focSel2 = ISS_OFF;
-    IUGetConfigSwitch(getDeviceName(), StepperSelectSP.name, AutoPWMDefaultOnS[STP_SEL_2].name, &focSel2);
+    IUGetConfigSwitch(getDeviceName(), StepperSelectSP.name, StepperSelectS[STP_SEL_2].name, &focSel2);
 
     IUFillSwitch(&StepperSelectS[STP_SEL_1], "STP_SEL_1", "Focuser 1", focSel1);
     IUFillSwitch(&StepperSelectS[STP_SEL_2], "STP_SEL_2", "Focuser 2", focSel2);
