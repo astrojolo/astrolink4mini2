@@ -162,6 +162,7 @@ private:
     static constexpr const char *POWER_TAB {"Power"};
     static constexpr const char *ENVIRONMENT_TAB {"Environment"};
     static constexpr const char *SETTINGS_TAB {"Settings"};
+    static constexpr const char *FOC_SETTINGS_TAB {"Focuser Settings"};
 };
 
 #endif
