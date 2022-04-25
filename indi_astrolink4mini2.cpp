@@ -37,8 +37,6 @@ std::unique_ptr<AstroLink4mini2> mini2(new AstroLink4mini2());
 AstroLink4mini2::AstroLink4mini2()
 {
     setVersion(0, 1);
-
-    command.reserve(200);
 }
 
 
