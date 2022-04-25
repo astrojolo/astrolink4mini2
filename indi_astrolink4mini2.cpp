@@ -29,9 +29,9 @@
 #include <math.h>
 #include <iomanip>
 
-#define ASTROLINK_LEN       200;
-#define POLLTIME            500;
-#define ASTROLINK4_TIMEOUT  3;
+#define ASTROLINK_LEN       200
+#define POLLTIME            500
+#define ASTROLINK4_TIMEOUT  3
 
 //////////////////////////////////////////////////////////////////////
 /// Delegates
