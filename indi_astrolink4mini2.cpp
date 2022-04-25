@@ -35,7 +35,7 @@ std::unique_ptr<IndiAstroLink4mini2> indiFocuserLink(new IndiAstroLink4mini2());
 //////////////////////////////////////////////////////////////////////
 ///Constructor
 //////////////////////////////////////////////////////////////////////
-IndiAstroLink4mini2::IndiAstroLink4mini2()
+IndiAstroLink4mini2::IndiAstroLink4mini2() : FI(this)
 {
     setVersion(VERSION_MAJOR, VERSION_MINOR);
 }
@@ -159,8 +159,9 @@ IPState IndiAstroLink4mini2::MoveRelFocuser(FocusDirection dir, uint32_t ticks)
 
 bool IndiAstroLink4mini2::AbortFocuser()
 {
-    char res[ASTROLINK4_LEN] = {0};
-    return (sendCommand("H:%i", focuserIndex, res));
+    char cmd[ASTROLINK4_LEN] = {0}, res[ASTROLINK4_LEN] = {0};
+    snprintf(cmd, ASTROLINK4_LEN, "H:%i", focuserIndex);
+    return (sendCommand(cmd, res));
 }
 
 bool IndiAstroLink4mini2::ReverseFocuser(bool enabled)
@@ -172,7 +173,7 @@ bool IndiAstroLink4mini2::SyncFocuser(uint32_t ticks)
 {
     char cmd[ASTROLINK4_LEN] = {0}, res[ASTROLINK4_LEN] = {0};
     snprintf(cmd, ASTROLINK4_LEN, "P:%i:%u", focuserIndex, ticks);
-    return sendCommand(cmd, res);
+    return (sendCommand(cmd, res));
 }
 
 bool IndiAstroLink4mini2::SetFocuserMaxPosition(uint32_t ticks)
