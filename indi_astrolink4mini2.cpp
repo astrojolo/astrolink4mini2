@@ -75,6 +75,7 @@ void IndiAstroLink4mini2::TimerHit()
 {
     if (isConnected())
     {
+        readDevice();
         SetTimer(POLLTIME);
     }
 }
@@ -141,6 +142,64 @@ bool IndiAstroLink4mini2::saveConfigItems(FILE *fp)
     return true;
 }
 
+//////////////////////////////////////////////////////////////////////
+/// Focuser interface
+//////////////////////////////////////////////////////////////////////
+IPState IndiAstroLink4mini2::MoveAbsFocuser(uint32_t targetTicks)
+{
+    char cmd[ASTROLINK4_LEN] = {0}, res[ASTROLINK4_LEN] = {0};
+    snprintf(cmd, ASTROLINK4_LEN, "R:%i:%u", focuserIndex,  targetTicks);
+    return (sendCommand(cmd, res)) ? IPS_BUSY : IPS_ALERT;
+}
+
+IPState IndiAstroLink4mini2::MoveRelFocuser(FocusDirection dir, uint32_t ticks)
+{
+    return MoveAbsFocuser(dir == FOCUS_INWARD ? FocusAbsPosN[0].value - ticks : FocusAbsPosN[0].value + ticks);
+}
+
+bool IndiAstroLink4mini2::AbortFocuser()
+{
+    char res[ASTROLINK4_LEN] = {0};
+    return (sendCommand("H:%i", focuserIndex, res));
+}
+
+bool IndiAstroLink4mini2::ReverseFocuser(bool enabled)
+{
+    return updateSettings("u", "U", U_FOC1_REV, (enabled) ? "1" : "0");
+}
+
+bool IndiAstroLink4mini2::SyncFocuser(uint32_t ticks)
+{
+    char cmd[ASTROLINK4_LEN] = {0}, res[ASTROLINK4_LEN] = {0};
+    snprintf(cmd, ASTROLINK4_LEN, "P:%i:%u", focuserIndex, ticks);
+    return sendCommand(cmd, res);
+}
+
+bool IndiAstroLink4mini2::SetFocuserMaxPosition(uint32_t ticks)
+{
+    if (updateSettings("u", "U", U_FOC1_MAX, std::to_string(ticks).c_str()))
+    {
+        FocuserSettingsNP.s = IPS_BUSY;
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+bool IndiAstroLink4mini2::SetFocuserBacklash(int32_t steps)
+{
+    //backlashSteps = steps;
+    return true;
+}
+
+bool IndiAstroLink4mini2::SetFocuserBacklashEnabled(bool enabled)
+{
+    //backlashEnabled = enabled;
+    return true;
+}
+
 
 //////////////////////////////////////////////////////////////////////
 /// Serial commands
@@ -195,4 +254,44 @@ bool IndiAstroLink4mini2::sendCommand(const char *cmd, char *res)
         }
     }
     return (cmd[0] == res[0]);
+}
+
+bool IndiAstroLink4mini2::readDevice()
+{
+    char res[ASTROLINK4_LEN] = {0};
+    if (sendCommand("q", res))
+    {
+        std::vector<std::string> result = split(res, ":");
+        result.erase(result.begin());
+
+        //DEBUGF(INDI::Logger::DBG_SESSION, "Selected %i", selectedFocuser);
+        
+        float focuserPosition = std::stod(result[focuserIndex == 2 ? Q_FOC2_POS : Q_FOC1_POS]);
+        FocusAbsPosN[0].value = focuserPosition;
+        FocusPosMMN[0].value = focuserPosition * FocuserSettingsN[FS_STEP_SIZE].value / 1000.0;
+        IDSetNumber(&FocusPosMMNP, nullptr);
+        IDSetNumber(&FocusAbsPosNP, nullptr);
+    }
+
+    return true;
+}
+
+//////////////////////////////////////////////////////////////////////
+/// Helper functions
+//////////////////////////////////////////////////////////////////////
+std::vector<std::string> IndiAstroLink4mini2::split(const std::string &input, const std::string &regex)
+{
+    // passing -1 as the submatch index parameter performs splitting
+    std::regex re(regex);
+    std::sregex_token_iterator
+        first{input.begin(), input.end(), re, -1},
+        last;
+    return {first, last};
+}
+
+std::string IndiAstroLink4mini2::doubleToStr(double val)
+{
+    char buf[10];
+    sprintf(buf, "%.0f", val);
+    return std::string(buf);
 }

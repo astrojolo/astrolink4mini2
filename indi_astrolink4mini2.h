@@ -116,7 +116,7 @@ namespace Connection
 class Serial;
 }
 
-class IndiAstroLink4mini2 : public INDI::DefaultDevice
+class IndiAstroLink4mini2 : public INDI::DefaultDevice, public INDI::FocuserInterface
 {
 
 public:
@@ -134,12 +134,28 @@ protected:
     virtual bool saveConfigItems(FILE *fp);
     virtual bool sendCommand(const char * cmd, char * res);
 
+    // Focuser Overrides
+    virtual IPState MoveAbsFocuser(uint32_t targetTicks) override;
+    virtual IPState MoveRelFocuser(FocusDirection dir, uint32_t ticks) override;
+    virtual bool AbortFocuser() override;
+    virtual bool ReverseFocuser(bool enabled) override;
+    virtual bool SyncFocuser(uint32_t ticks) override;
+
+    virtual bool SetFocuserBacklash(int32_t steps) override;
+    virtual bool SetFocuserBacklashEnabled(bool enabled) override;
+    virtual bool SetFocuserMaxPosition(uint32_t ticks) override;    
+
 	
 private:
     virtual bool Handshake();
     int PortFD = -1;
     Connection::Serial *serialConnection { nullptr };
     char stopChar { 0xA };	// new line
+    uint8_t focuserIndex = 1;
+    bool readDevice();
+
+    std::vector<std::string> split(const std::string &input, const std::string &regex);
+    std::string doubleToStr(double val);
     
     static constexpr const char *POWER_TAB {"Power"};
     static constexpr const char *ENVIRONMENT_TAB {"Environment"};
