@@ -87,11 +87,23 @@ const char* AstroLink4mini2::getDefaultName()
 //////////////////////////////////////////////////////////////////////
 bool AstroLink4mini2::Handshake()
 {
-    char response[ASTROLINK_LEN] = {0};
-    int nbytes_read = 0;
     PortFD = serialConnection->getPortFD();
 
-    return true;
+    char res[ASTROLINK4_LEN] = {0};
+    if (sendCommand("#", res))
+    {
+        if (strncmp(res, "#:AstroLink4mini", 16) != 0)
+        {
+            DEBUG(INDI::Logger::DBG_ERROR, "Device not recognized.");
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+        
+    }
+    return false;    
 }
 
 //////////////////////////////////////////////////////////////////////

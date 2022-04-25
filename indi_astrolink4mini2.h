@@ -52,5 +52,6 @@ class AstroLink4mini2 : public INDI::DefaultDevice//, public INDI::FocuserInterf
         std::vector<std::string> command;
 
         static constexpr const uint8_t ASTROLINK_LEN {200};
+        static constexpr const uint8_t POLLTIME {500};
 
 };
