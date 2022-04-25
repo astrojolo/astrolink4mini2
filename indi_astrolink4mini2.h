@@ -43,11 +43,13 @@ class AstroLink4mini2 : public INDI::DefaultDevice//, public INDI::FocuserInterf
         const char *getDefaultName() override;
         virtual bool saveConfigItems(FILE *fp) override;   
         virtual void TimerHit() override;
+        virtual bool sendCommand(const char * cmd, char * res);
 
     private:
         bool Handshake();
         int PortFD { -1 };
         Connection::Serial *serialConnection { nullptr };
+        char stopChar { 0xA };	// new line
 
         std::vector<std::string> command;
 
