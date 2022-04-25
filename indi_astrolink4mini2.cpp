@@ -165,7 +165,7 @@ bool IndiAstroLink4mini2::AbortFocuser()
 
 bool IndiAstroLink4mini2::ReverseFocuser(bool enabled)
 {
-    return updateSettings("u", "U", U_FOC1_REV, (enabled) ? "1" : "0");
+    return true;
 }
 
 bool IndiAstroLink4mini2::SyncFocuser(uint32_t ticks)
@@ -177,15 +177,7 @@ bool IndiAstroLink4mini2::SyncFocuser(uint32_t ticks)
 
 bool IndiAstroLink4mini2::SetFocuserMaxPosition(uint32_t ticks)
 {
-    if (updateSettings("u", "U", U_FOC1_MAX, std::to_string(ticks).c_str()))
-    {
-        FocuserSettingsNP.s = IPS_BUSY;
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+return true;
 }
 
 bool IndiAstroLink4mini2::SetFocuserBacklash(int32_t steps)
@@ -268,8 +260,6 @@ bool IndiAstroLink4mini2::readDevice()
         
         float focuserPosition = std::stod(result[focuserIndex == 2 ? Q_FOC2_POS : Q_FOC1_POS]);
         FocusAbsPosN[0].value = focuserPosition;
-        FocusPosMMN[0].value = focuserPosition * FocuserSettingsN[FS_STEP_SIZE].value / 1000.0;
-        IDSetNumber(&FocusPosMMNP, nullptr);
         IDSetNumber(&FocusAbsPosNP, nullptr);
     }
 
