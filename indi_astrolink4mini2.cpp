@@ -432,6 +432,7 @@ bool IndiAstroLink4mini2::saveConfigItems(FILE *fp)
 {
     INDI::DefaultDevice::saveConfigItems(fp);
     FI::saveConfigItems(fp);
+    IUSaveConfigSwitch(fp, &StepperSelectSP);
     return true;
 }
 
