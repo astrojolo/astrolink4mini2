@@ -120,11 +120,11 @@ bool IndiAstroLink4mini2::updateProperties()
 
     if (isConnected())
     {
-         //
+         FI::updateProperties();
     }
     else
     {
-        //
+        FI::updateProperties();
     }
 
     return true;
