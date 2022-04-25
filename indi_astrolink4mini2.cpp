@@ -307,7 +307,17 @@ bool IndiAstroLink4mini2::readDevice()
         //DEBUGF(INDI::Logger::DBG_SESSION, "Selected %i", selectedFocuser);
         
         int focuserPosition = std::stoi(result[focuserIndex == 1 ? Q_FOC2_POS : Q_FOC1_POS]);
+        int stepsToGo = std::stod(result[focuserIndex == 1 ? Q_FOC2_TO_GO : Q_FOC1_TO_GO]);
         FocusAbsPosN[0].value = focuserPosition;
+        if (stepsToGo == 0)
+        {
+            FocusAbsPosNP.s = FocusRelPosNP.s = IPS_OK;
+            IDSetNumber(&FocusRelPosNP, nullptr);
+        }
+        else
+        {
+            FocusAbsPosNP.s = FocusRelPosNP.s = IPS_BUSY;
+        }        
         IDSetNumber(&FocusAbsPosNP, nullptr);
     }
 
