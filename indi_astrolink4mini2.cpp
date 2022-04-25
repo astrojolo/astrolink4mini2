@@ -186,8 +186,8 @@ bool IndiAstroLink4mini2::initProperties()
     IUFillNumberVector(&PWMNP, PWMN, 2, getDeviceName(), "PWM", "PWM", POWER_TAB, IP_RW, 60, IPS_IDLE);    
 
     // Select focuser
-    IUFillSwitch(&StepperSelectS[STP_SEL_1], "STP_SEL_1", "Focuser 1", ISS_ON);
-    IUFillSwitch(&StepperSelectS[STP_SEL_2], "STP_SEL_2", "Focuser 2", ISS_OFF);
+    IUFillSwitch(&StepperSelectS[0], "STP_SEL_1", "Focuser 1", ISS_ON);
+    IUFillSwitch(&StepperSelectS[1], "STP_SEL_2", "Focuser 2", ISS_OFF);
     IUFillSwitchVector(&StepperSelectSP, StepperSelectS, 2, getDeviceName(), "FOCUS_SELECT", "Selected stepper", FOCUS_TAB, IP_RW, ISR_1OFMANY, 0, IPS_IDLE);     
 
     // Environment Group
@@ -393,7 +393,7 @@ bool IndiAstroLink4mini2::ISNewSwitch(const char *dev, const char *name, ISState
         // Stepper select
         if (!strcmp(name, StepperSelectSP.name))
         {
-            selectedFocuser = (strcmp(StepperSelectS[STP_SEL_1].name, names[0])) ? 2 : 1;
+            selectedFocuser = (strcmp(StepperSelectS[0].name, names[0])) ? 2 : 1;
             StepperSelectSP.s = IPS_BUSY;
             IUUpdateSwitch(&StepperSelectSP, states, names, n);
             IDSetSwitch(&StepperSelectSP, nullptr);
@@ -432,7 +432,6 @@ bool IndiAstroLink4mini2::saveConfigItems(FILE *fp)
 {
     INDI::DefaultDevice::saveConfigItems(fp);
     FI::saveConfigItems(fp);
-    IUSaveConfigSwitch(fp, &StepperSelectSP);
     return true;
 }
 
@@ -688,8 +687,8 @@ bool IndiAstroLink4mini2::sensorRead()
 
     if (StepperSelectSP.s != IPS_OK)
     {
-        StepperSelectS[STP_SEL_1].s = (selectedFocuser == 1) ? ISS_ON : ISS_OFF;
-        StepperSelectS[STP_SEL_2].s = (selectedFocuser != 1) ? ISS_ON : ISS_OFF;
+        StepperSelectS[0].s = (selectedFocuser == 1) ? ISS_ON : ISS_OFF;
+        StepperSelectS[1].s = (selectedFocuser != 1) ? ISS_ON : ISS_OFF;
         StepperSelectSP.s = IPS_OK;
         IDSetSwitch(&StepperSelectSP, nullptr);
     }

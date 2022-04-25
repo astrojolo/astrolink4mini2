@@ -199,8 +199,7 @@ private:
 
     ISwitch StepperSelectS[2];
     ISwitchVectorProperty StepperSelectSP;
-    enum {STP_SEL_1, STP_SEL_2};
-
+ 
     ISwitch Power1S[2];
     ISwitchVectorProperty Power1SP;
     ISwitch Power2S[2];
