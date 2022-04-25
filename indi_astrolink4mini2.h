@@ -55,7 +55,7 @@ class AstroLink4mini2 : public INDI::DefaultDevice//, public INDI::FocuserInterf
         virtual void TimerHit() override;
 
     private:
-        bool HandShake();
+        bool Handshake();
         int PortFD { -1 };
         Connection::Serial *serialConnection { nullptr };
 
