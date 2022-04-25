@@ -432,7 +432,6 @@ bool IndiAstroLink4mini2::saveConfigItems(FILE *fp)
 {
     INDI::DefaultDevice::saveConfigItems(fp);
     FI::saveConfigItems(fp);
-    WI:saveConfigItems(fp);
     return true;
 }
 
