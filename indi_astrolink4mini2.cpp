@@ -25,7 +25,7 @@
 #define ASTROLINK4_LEN 200
 #define ASTROLINK4_TIMEOUT 3
 
-#define POLLTIME 500
+#define POLLTIME 2000
 
 //////////////////////////////////////////////////////////////////////
 /// Delegates
@@ -158,6 +158,7 @@ bool IndiAstroLink4mini2::ISNewSwitch(const char *dev, const char *name, ISState
             FocuserSelectSP.s = FocusMaxPosNP.s = FocusReverseSP.s = FocusAbsPosNP.s = IPS_BUSY;
             IUUpdateSwitch(&FocuserSelectSP, states, names, n);
             IDSetSwitch(&FocuserSelectSP, nullptr);
+            IDSetSwitch(&FocusReverseSP, nullptr);
             return true;
         }
 
