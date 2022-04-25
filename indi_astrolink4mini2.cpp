@@ -686,11 +686,10 @@ bool IndiAstroLink4mini2::sensorRead()
 
     if (FocuserSelectSP.s != IPS_OK)
     {
-            FocuserSelectS[FOC_SEL_1].s = (selectedFocuser == 1) ? ISS_ON : ISS_OFF;
-            FocuserSelectS[FOC_SEL_2].s = (selectedFocuser != 1) ? ISS_ON : ISS_OFF;
-            FocuserSelectSP.s = IPS_OK;
-            IDSetSwitch(&FocuserSelectSP, nullptr);
-        }
+        FocuserSelectS[FOC_SEL_1].s = (selectedFocuser == 1) ? ISS_ON : ISS_OFF;
+        FocuserSelectS[FOC_SEL_2].s = (selectedFocuser != 1) ? ISS_ON : ISS_OFF;
+        FocuserSelectSP.s = IPS_OK;
+        IDSetSwitch(&FocuserSelectSP, nullptr);
     }
 
     return true;
