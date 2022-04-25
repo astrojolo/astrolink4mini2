@@ -132,11 +132,21 @@ bool IndiAstroLink4mini2::updateProperties()
 
 bool IndiAstroLink4mini2::ISNewNumber(const char *dev, const char *name, double values[], char *names[], int n)
 {   
+    if (dev && !strcmp(dev, getDeviceName()))
+    {    
+        if (strstr(name, "FOCUS"))
+            return FI::processNumber(dev, name, values, names, n);    
+    }
     return INDI::DefaultDevice::ISNewNumber(dev, name, values, names, n);
 }
 
 bool IndiAstroLink4mini2::ISNewSwitch(const char *dev, const char *name, ISState *states, char *names[], int n)
 {
+    if (dev && !strcmp(dev, getDeviceName()))
+    {    
+        if (strstr(name, "FOCUS"))
+            return FI::processSwitch(dev, name, states, names, n);  
+    }  
     return INDI::DefaultDevice::ISNewSwitch(dev, name, states, names, n);
 }
 
