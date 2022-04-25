@@ -91,7 +91,7 @@ bool AstroLink4mini2::Handshake()
 {
     PortFD = serialConnection->getPortFD();
 
-    char res[ASTROLINK4_LEN] = {0};
+    char res[ASTROLINK_LEN] = {0};
     if (sendCommand("#", res))
     {
         if (strncmp(res, "#:AstroLink4mini", 16) != 0)
