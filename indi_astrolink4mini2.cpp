@@ -49,7 +49,9 @@ bool AstroLink4mini2::initProperties()
     INDI::DefaultDevice::initProperties();
     setDriverInterface(AUX_INTERFACE);
 
-    addAuxControls();
+    addDebugControl();
+    addSimulationControl();
+    addConfigurationControl();
 
     serialConnection = new Connection::Serial(this);
     serialConnection->registerHandshake([&]()
