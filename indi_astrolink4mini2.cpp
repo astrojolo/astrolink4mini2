@@ -162,7 +162,7 @@ bool IndiAstroLink4mini2::initProperties()
 
     IUFillSwitch(&FocuserSelectS[FOC_SEL_1], "FOC_SEL_1", "Focuser 1", ISS_ON);
     IUFillSwitch(&FocuserSelectS[FOC_SEL_2], "FOC_SEL_2", "Focuser 2", ISS_OFF);
-    IUFillSwitchVector(&FocuserSelectSP, FocuserSelectS, 2, getDeviceName(), "FOC_SELECT", "Selected stepper", FOCUS_TAB, IP_RW, ISR_1OFMANY, 0, IPS_IDLE); 
+    IUFillSwitchVector(&FocuserSelectSP, FocuserSelectS, 2, getDeviceName(), "FOC_SELECT", "Selected stepper", SETTINGS_TAB, IP_RW, ISR_1OFMANY, 0, IPS_IDLE); 
 
     // Power readings
     IUFillNumber(&PowerDataN[POW_VIN], "VIN", "Input voltage [V]", "%.1f", 0, 15, 10, 0);
