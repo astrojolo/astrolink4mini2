@@ -18,82 +18,41 @@
 #include "indi_astrolink4mini2.h"
 
 #include "indicom.h"
-#include "connectionplugins/connectionserial.h"
 
-#include <memory>
-#include <regex>
-#include <termios.h>
-#include <cstring>
-#include <sys/ioctl.h>
-#include <chrono>
-#include <math.h>
-#include <iomanip>
+#define VERSION_MAJOR 0
+#define VERSION_MINOR 2
 
-#define ASTROLINK_LEN       200
-#define POLLTIME            500
-#define ASTROLINK_TIMEOUT   3
+#define ASTROLINK4_LEN 200
+#define ASTROLINK4_TIMEOUT 3
+
+#define POLLTIME 500
 
 //////////////////////////////////////////////////////////////////////
 /// Delegates
 //////////////////////////////////////////////////////////////////////
-std::unique_ptr<AstroLink4mini2> mini2(new AstroLink4mini2());
+std::unique_ptr<IndiAstroLink4mini2> indiFocuserLink(new IndiAstroLink4mini2());
 
-AstroLink4mini2::AstroLink4mini2()
+//////////////////////////////////////////////////////////////////////
+///Constructor
+//////////////////////////////////////////////////////////////////////
+IndiAstroLink4mini2::IndiAstroLink4mini2()
 {
-    setVersion(0, 1);
+    setVersion(VERSION_MAJOR, VERSION_MINOR);
 }
 
-
-bool AstroLink4mini2::initProperties()
+const char *IndiAstroLink4mini2::getDefaultName()
 {
-    INDI::DefaultDevice::initProperties();
-    setDriverInterface(AUX_INTERFACE);
-
-    addDebugControl();
-    addSimulationControl();
-    addConfigurationControl();
-
-    serialConnection = new Connection::Serial(this);
-    serialConnection->registerHandshake([&]()
-    { 
-        return Handshake(); 
-     });
-    registerConnection(serialConnection);
-
-    serialConnection->setDefaultPort("/dev/ttyUSB0");
-    serialConnection->setDefaultBaudRate(serialConnection->B_38400);
-
-    return true;    
-}
-
-bool AstroLink4mini2::updateProperties()
-{
-    INDI::DefaultDevice::updateProperties();
-
-    if (isConnected())
-    {
-        /* code */
-    }
-    else
-    {
-        /* code */
-    }
-     return true;
-}
-
-const char* AstroLink4mini2::getDefaultName()
-{
-    return "AstroLink 4 mini II";
+    return (char *)"AstroLink 4 mini II";
 }
 
 //////////////////////////////////////////////////////////////////////
-///
+/// Communication
 //////////////////////////////////////////////////////////////////////
-bool AstroLink4mini2::Handshake()
+bool IndiAstroLink4mini2::Handshake()
 {
     PortFD = serialConnection->getPortFD();
 
-    char res[ASTROLINK_LEN] = {0};
+    char res[ASTROLINK4_LEN] = {0};
     if (sendCommand("#", res))
     {
         if (strncmp(res, "#:AstroLink4mini", 16) != 0)
@@ -103,56 +62,93 @@ bool AstroLink4mini2::Handshake()
         }
         else
         {
+            SetTimer(POLLTIME);
+            // Require update
+            FocuserSettingsNP.s = IPS_BUSY;
             return true;
         }
-        
     }
-    return false;    
+    return false;
+}
+
+void IndiAstroLink4mini2::TimerHit()
+{
+    if (isConnected())
+    {
+        SetTimer(POLLTIME);
+    }
 }
 
 //////////////////////////////////////////////////////////////////////
-///
+/// Overrides
 //////////////////////////////////////////////////////////////////////
-bool AstroLink4mini2::ISNewSwitch(const char * dev, const char * name, ISState * states, char * names[], int n)
+bool IndiAstroLink4mini2::initProperties()
 {
+    INDI::DefaultDevice::initProperties();
+
+    setDriverInterface(AUX_INTERFACE);
+
+    addDebugControl();
+    addSimulationControl();
+    addConfigurationControl();
+
+    serialConnection = new Connection::Serial(this);
+    serialConnection->registerHandshake([&]()
+                                        { return Handshake(); });
+    registerConnection(serialConnection);
+
+    serialConnection->setDefaultPort("/dev/ttyUSB0");
+    serialConnection->setDefaultBaudRate(serialConnection->B_38400);
+
     return true;
 }
 
-bool AstroLink4mini2::ISNewNumber(const char * dev, const char * name, double values[], char * names[], int n)
+bool IndiAstroLink4mini2::updateProperties()
 {
+    // Call parent update properties first
+    INDI::DefaultDevice::updateProperties();
+
+    if (isConnected())
+    {
+         //
+    }
+    else
+    {
+        //
+    }
+
     return true;
 }
 
-bool AstroLink4mini2::ISNewText(const char * dev, const char * name, char * texts[], char * names[], int n)
-{
-    return true;
+bool IndiAstroLink4mini2::ISNewNumber(const char *dev, const char *name, double values[], char *names[], int n)
+{   
+    return INDI::DefaultDevice::ISNewNumber(dev, name, values, names, n);
 }
 
-//////////////////////////////////////////////////////////////////////
-///
-//////////////////////////////////////////////////////////////////////
-bool AstroLink4mini2::saveConfigItems(FILE *fp)
+bool IndiAstroLink4mini2::ISNewSwitch(const char *dev, const char *name, ISState *states, char *names[], int n)
+{
+    return INDI::DefaultDevice::ISNewSwitch(dev, name, states, names, n);
+}
+
+bool IndiAstroLink4mini2::ISNewText(const char *dev, const char *name, char *texts[], char *names[], int n)
+{
+    return INDI::DefaultDevice::ISNewText(dev, name, texts, names, n);
+}
+
+bool IndiAstroLink4mini2::saveConfigItems(FILE *fp)
 {
     INDI::DefaultDevice::saveConfigItems(fp);
-
     return true;
 }
 
-//////////////////////////////////////////////////////////////////////
-///
-//////////////////////////////////////////////////////////////////////
-void AstroLink4mini2::TimerHit()
-{
-    SetTimer(getCurrentPollingPeriod());
-}
 
 //////////////////////////////////////////////////////////////////////
 /// Serial commands
 //////////////////////////////////////////////////////////////////////
-bool AstroLink4mini2::sendCommand(const char *cmd, char *res)
+bool IndiAstroLink4mini2::sendCommand(const char *cmd, char *res)
 {
     int nbytes_read = 0, nbytes_written = 0, tty_rc = 0;
-    char command[ASTROLINK_LEN];
+    char command[ASTROLINK4_LEN];
 
     if (isSimulation())
     {
@@ -184,7 +180,7 @@ bool AstroLink4mini2::sendCommand(const char *cmd, char *res)
             return true;
         }
 
-        if ((tty_rc = tty_nread_section(PortFD, res, ASTROLINK_LEN, stopChar, ASTROLINK_TIMEOUT, &nbytes_read)) != TTY_OK || nbytes_read == 1)
+        if ((tty_rc = tty_nread_section(PortFD, res, ASTROLINK4_LEN, stopChar, ASTROLINK4_TIMEOUT, &nbytes_read)) != TTY_OK || nbytes_read == 1)
             return false;
 
         tcflush(PortFD, TCIOFLUSH);
