@@ -392,7 +392,7 @@ bool IndiAstroLink4mini2::ISNewSwitch(const char *dev, const char *name, ISState
         // Stepper select
         if (!strcmp(name, FocuserSelectSP.name))
         {
-            selectedFocuser = (strcmp(FocuserSelectS[FOC_SEL_1].name, names[0])) ? 1 : 2);
+            selectedFocuser = (strcmp(FocuserSelectS[FOC_SEL_1].name, names[0])) ? 1 : 2;
             FocuserSelectSP.s = IPS_BUSY;
             IUUpdateSwitch(&FocuserSelectSP, states, names, n);
             IDSetSwitch(&FocuserSelectSP, nullptr);
