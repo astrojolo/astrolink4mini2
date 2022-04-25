@@ -211,7 +211,16 @@ bool IndiAstroLink4mini2::SyncFocuser(uint32_t ticks)
 {
     char cmd[ASTROLINK4_LEN] = {0}, res[ASTROLINK4_LEN] = {0};
     snprintf(cmd, ASTROLINK4_LEN, "P:%i:%u", focuserIndex, ticks);
-    return (sendCommand(cmd, res));
+    if (sendCommand(cmd, res))
+    {
+        FocusAbsPosNP.s = IPS_BUSY;
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+    
 }
 
 bool IndiAstroLink4mini2::SetFocuserMaxPosition(uint32_t ticks)
