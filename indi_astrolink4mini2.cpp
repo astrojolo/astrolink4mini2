@@ -355,7 +355,6 @@ bool IndiAstroLink4mini2::readDevice()
             if (FocusReverseSP.s != IPS_OK)
             {
                 int index = focuserIndex > 0 ? U_FOC2_REV : U_FOC1_REV;
-                DEBUGF(INDI::Logger::DBG_SESSION, "Rev %i %s", index, res);
                 FocusReverseS[0].s = (std::stoi(result[index]) == 0) ? ISS_ON : ISS_OFF;
                 FocusReverseS[1].s = (std::stoi(result[index]) > 0) ? ISS_ON : ISS_OFF;
                 FocusReverseSP.s = IPS_OK;
@@ -392,6 +391,7 @@ std::string IndiAstroLink4mini2::doubleToStr(double val)
 
 bool IndiAstroLink4mini2::updateSettings(const char *getCom, const char *setCom, int index, const char *value)
 {
+    DEBUGF(INDI::Logger::DBG_SESSION, "Update %i %s", index, value);
     std::map<int, std::string> values;
     values[index] = value;
     return updateSettings(getCom, setCom, values);
