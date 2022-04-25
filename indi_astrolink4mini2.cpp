@@ -155,7 +155,7 @@ bool IndiAstroLink4mini2::ISNewSwitch(const char *dev, const char *name, ISState
         if (!strcmp(name, FocuserSelectSP.name))
         {
             focuserIndex = (strcmp(FocuserSelectS[0].name, names[0])) ? 1 : 0;
-            FocuserSelectSP.s = IPS_BUSY;
+            FocuserSelectSP.s = FocusMaxPosNP.s = IPS_BUSY;
             IUUpdateSwitch(&FocuserSelectSP, states, names, n);
             IDSetSwitch(&FocuserSelectSP, nullptr);
             return true;
@@ -306,7 +306,7 @@ bool IndiAstroLink4mini2::readDevice()
 
         //DEBUGF(INDI::Logger::DBG_SESSION, "Selected %i", selectedFocuser);
         
-        float focuserPosition = std::stod(result[focuserIndex == 1 ? Q_FOC2_POS : Q_FOC1_POS]);
+        int focuserPosition = std::stoi(result[focuserIndex == 1 ? Q_FOC2_POS : Q_FOC1_POS]);
         FocusAbsPosN[0].value = focuserPosition;
         IDSetNumber(&FocusAbsPosNP, nullptr);
     }
