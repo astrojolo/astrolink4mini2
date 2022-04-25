@@ -145,7 +145,7 @@ void AstroLink4mini2::TimerHit()
 //////////////////////////////////////////////////////////////////////
 /// Serial commands
 //////////////////////////////////////////////////////////////////////
-bool IndiAstroLink4mini2::sendCommand(const char *cmd, char *res)
+bool AstroLink4mini2::sendCommand(const char *cmd, char *res)
 {
     int nbytes_read = 0, nbytes_written = 0, tty_rc = 0;
     char command[ASTROLINK4_LEN];
