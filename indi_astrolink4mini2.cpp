@@ -378,7 +378,8 @@ bool IndiAstroLink4mini2::ISNewSwitch(const char *dev, const char *name, ISState
         if (!strcmp(name, FocuserManualSP.name))
         {
             sprintf(cmd, "F:%s", (strcmp(FocuserManualS[0].name, names[0])) ? "0" : "1");
-            if (sendCommand(cmd, res))
+            DEBUGF(INDI::Logger::DBG_SESSION, "Foc manual mode set %s", cmd);
+           if (sendCommand(cmd, res))
             {
                 FocuserManualSP.s = IPS_BUSY;
                 IUUpdateSwitch(&FocuserManualSP, states, names, n);
@@ -393,6 +394,7 @@ bool IndiAstroLink4mini2::ISNewSwitch(const char *dev, const char *name, ISState
         if (!strcmp(name, FocuserSelectSP.name))
         {
             selectedFocuser = (strcmp(FocuserSelectS[FOC_SEL_1].name, names[0])) ? 2 : 1;
+            DEBUGF(INDI::Logger::DBG_SESSION, "Foc selected set %i", selectedFocuser);
             FocuserSelectSP.s = IPS_BUSY;
             IUUpdateSwitch(&FocuserSelectSP, states, names, n);
             IDSetSwitch(&FocuserSelectSP, nullptr);
@@ -405,6 +407,7 @@ bool IndiAstroLink4mini2::ISNewSwitch(const char *dev, const char *name, ISState
             std::string value = "0";
             if (!strcmp(FocuserCompModeS[FS_COMP_AUTO].name, names[0]))
                 value = "1";
+            DEBUGF(INDI::Logger::DBG_SESSION, "Foc comp mode set %s", value);
             if (updateSettings("u", "U", U_FOC1_COMPAUTO, value.c_str()))
             {
                 FocuserCompModeSP.s = IPS_BUSY;
@@ -575,7 +578,7 @@ bool IndiAstroLink4mini2::sensorRead()
         std::vector<std::string> result = split(res, ":");
         result.erase(result.begin());
 
-        DEBUGF(INDI::Logger::DBG_SESSION, "Selected %i", selectedFocuser);
+        //DEBUGF(INDI::Logger::DBG_SESSION, "Selected %i", selectedFocuser);
         
         float focuserPosition = std::stod(result[selectedFocuser == 2 ? Q_FOC2_POS : Q_FOC1_POS]);
         FocusAbsPosN[0].value = focuserPosition;
