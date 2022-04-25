@@ -196,6 +196,9 @@ private:
     FS_MANUAL_ON, FS_MANUAL_OFF
     };
 
+    ISwitch FocuserSelectS[2];
+    ISwitchVectorProperty FocuserSelectSP;
+
     ISwitch Power1S[2];
     ISwitchVectorProperty Power1SP;
     ISwitch Power2S[2];

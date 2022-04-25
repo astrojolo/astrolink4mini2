@@ -160,6 +160,10 @@ bool IndiAstroLink4mini2::initProperties()
     IUFillNumber(&FocusPosMMN[0], "FOC_POS_MM", "Position [mm]", "%.3f", 0.0, 200.0, 0.001, 0.0);
     IUFillNumberVector(&FocusPosMMNP, FocusPosMMN, 1, getDeviceName(), "FOC_POS_MM", "Position [mm]", FOCUS_TAB, IP_RO, 60, IPS_IDLE);
 
+    IUFillSwitch(&FocuserSelectS[0], "FOC_SEL_1", "Focuser 1", ISS_OFF);
+    IUFillSwitch(&FocuserSelectS[1], "FOC_SEL_2", "Focuser 2", ISS_ON);
+    IUFillSwitchVector(&FocuserSelectSP, FocuserSelectS, 2, getDeviceName(), "FOC_SELECT", "Selected stepper", FOCUS_TAB, IP_RW, ISR_1OFMANY, 0, IPS_IDLE); 
+
     // Power readings
     IUFillNumber(&PowerDataN[POW_VIN], "VIN", "Input voltage [V]", "%.1f", 0, 15, 10, 0);
     IUFillNumber(&PowerDataN[POW_REG], "REG", "Regulated voltage [V]", "%.1f", 0, 15, 10, 0);
@@ -212,7 +216,8 @@ bool IndiAstroLink4mini2::updateProperties()
         defineProperty(&Power1SP);
         defineProperty(&Power2SP);
         defineProperty(&Power3SP);
-        defineProperty(&PWMNP);                
+        defineProperty(&PWMNP);   
+        defineProperty(&FocuserSelectS);             
     }
     else
     {
@@ -226,7 +231,8 @@ bool IndiAstroLink4mini2::updateProperties()
         deleteProperty(Power1SP.name);
         deleteProperty(Power2SP.name);
         deleteProperty(Power3SP.name);    
-        deleteProperty(PWMNP.name);            
+        deleteProperty(PWMNP.name);     
+        deleteProperty(FOcuserSelectSP.name);       
         FI::updateProperties();
         WI::updateProperties();
     }
@@ -416,7 +422,7 @@ bool IndiAstroLink4mini2::saveConfigItems(FILE *fp)
 {
     INDI::DefaultDevice::saveConfigItems(fp);
     FI::saveConfigItems(fp);
-
+    WI:saveConfigItems(fp);
     return true;
 }
 
@@ -560,6 +566,10 @@ bool IndiAstroLink4mini2::sensorRead()
         std::vector<std::string> result = split(res, ":");
         result.erase(result.begin());
 
+        //sprintf(cmd, "C:0:%s", (strcmp(Power1S[0].name, names[0])) ? "0" : "1");
+
+        DEBUGF(INDI::Logger::DBG_SESSION, "Selected %s %s", FocuserSelectS[0].name, names[0]);
+        
         float focuserPosition = std::stod(result[Q_FOC1_POS]);
         FocusAbsPosN[0].value = focuserPosition;
         FocusPosMMN[0].value = focuserPosition * FocuserSettingsN[FS_STEP_SIZE].value / 1000.0;
