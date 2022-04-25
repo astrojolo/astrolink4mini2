@@ -151,7 +151,7 @@ private:
     int PortFD = -1;
     Connection::Serial *serialConnection { nullptr };
     char stopChar { 0xA };	// new line
-    uint8_t focuserIndex = 1;
+    uint8_t focuserIndex = 0;
     bool readDevice();
 
     std::vector<std::string> split(const std::string &input, const std::string &regex);
