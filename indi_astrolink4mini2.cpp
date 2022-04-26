@@ -449,4 +449,13 @@ bool IndiAstroLink4mini2::updateSettings(const char *getCom, const char *setCom,
     return false;
 }
 
+int IndiAstroLink4mini2::getFindex()
+{
+    return focuserIndex;
+}
 
+void IndiAstroLink4mini2::setFindex(int index)
+{
+    DEBUGF(INDI::Logger::DBG_DEBUG, "Focuser index set to %i", index);
+    focuserIndex = index;
+}

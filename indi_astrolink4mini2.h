@@ -151,6 +151,8 @@ private:
     Connection::Serial *serialConnection { nullptr };
     char stopChar { 0xA };	// new line
     int focuserIndex;
+    int getFindex();
+    void setFindex(int index);
     bool initComplete = false;
     bool readDevice();
     bool updateSettings(const char * getCom, const char * setCom, int index, const char * value);
