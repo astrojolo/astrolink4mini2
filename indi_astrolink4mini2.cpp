@@ -152,9 +152,11 @@ bool IndiAstroLink4mini2::updateProperties()
         defineProperty(&FocuserSelectSP);
         defineProperty(&Focuser1SettingsNP);
         defineProperty(&Focuser2SettingsNP);
+        defineProperty(&PowerDataNP);
     }
     else
     {
+        deleteProperty(PowerDataNP.name);
         deleteProperty(Focuser1SettingsNP.name);
         deleteProperty(Focuser2SettingsNP.name);
         deleteProperty(FocuserSelectSP.name);
