@@ -93,6 +93,7 @@ bool IndiAstroLink4mini2::initProperties()
     memset(focuserSelectLabel, 0, 15);
     focuserIndex = IUGetConfigOnSwitchLabel(getDeviceName(), FocuserSelectSP.name, focuserSelectLabel, 15) == 0 ? 0 : 1;
 
+    char res[ASTROLINK4_LEN] = {0};
     if (sendCommand("u", res))
     {
         std::vector<std::string> result = split(res, ":");
