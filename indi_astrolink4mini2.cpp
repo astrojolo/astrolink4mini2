@@ -435,17 +435,17 @@ bool IndiAstroLink4mini2::readDevice()
             FocusAbsPosNP.s = FocusRelPosNP.s = IPS_BUSY;
         }
         IDSetNumber(&FocusAbsPosNP, nullptr);
-    }
 
-    if (result.size() > 5)
-    {
-        PowerDataN[POW_ITOT].value = std::stod(result[Q_ITOT]);
-        PowerDataN[POW_REG].value = std::stod(result[Q_VREG]);
-        PowerDataN[POW_VIN].value = std::stod(result[Q_VIN]);
-        PowerDataN[POW_AH].value = std::stod(result[Q_AH]);
-        PowerDataN[POW_WH].value = std::stod(result[Q_WH]);
-        PowerDataNP.s = IPS_OK;
-        IDSetNumber(&PowerDataNP, nullptr);
+        if (result.size() > 5)
+        {
+            PowerDataN[POW_ITOT].value = std::stod(result[Q_ITOT]);
+            PowerDataN[POW_REG].value = std::stod(result[Q_VREG]);
+            PowerDataN[POW_VIN].value = std::stod(result[Q_VIN]);
+            PowerDataN[POW_AH].value = std::stod(result[Q_AH]);
+            PowerDataN[POW_WH].value = std::stod(result[Q_WH]);
+            PowerDataNP.s = IPS_OK;
+            IDSetNumber(&PowerDataNP, nullptr);
+        }
     }
 
     // update settings data if was changed
