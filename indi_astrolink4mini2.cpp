@@ -132,14 +132,11 @@ bool IndiAstroLink4mini2::updateProperties()
     {
          FI::updateProperties();
          defineProperty(&FocuserSelectSP);
-
-         initComplete = true;
     }
     else
     {
         deleteProperty(FocuserSelectSP.name);
         FI::updateProperties();
-        initComplete = false;
     }
 
     return true;
@@ -196,7 +193,9 @@ bool IndiAstroLink4mini2::loadConfig(bool silent, const char *property)
     bool result = INDI::DefaultDevice::loadConfig(silent, property);
     // force update from the device
     FocuserSelectSP.s = FocusMaxPosNP.s = FocusReverseSP.s = FocusAbsPosNP.s = IPS_BUSY;
-    DEBUG(INDI::Logger::DBG_SESSION, "Init complete");
+    DEBUG(INDI::Logger::DBG_DEBUG, "Init complete");
+    initComplete = true;
+
     return result;
 }
 
