@@ -619,9 +619,9 @@ bool IndiAstroLink4mini2::readDevice()
                 Focuser2SettingsN[FS2_STEP_SIZE].value = std::stod(result[U_FOC2_STEP]) / 100.0;
                 Focuser2SettingsN[FS2_COMPENSATION].value = std::stod(result[U_FOC2_COMPSTEPS]) / 100.0;
                 Focuser2SettingsN[FS2_COMP_THRESHOLD].value = std::stod(result[U_FOC2_COMPTRIGGER]);
-                Focuser1SettingsN[FS2_SPEED].value = std::stod(result[U_FOC2_SPEED]);
-                Focuser1SettingsN[FS2_CURRENT].value = std::stod(result[U_FOC2_CUR]);
-                Focuser1SettingsN[FS2_HOLD].value = std::stod(result[U_FOC2_HOLD]);
+                Focuser2SettingsN[FS2_SPEED].value = std::stod(result[U_FOC2_SPEED]);
+                Focuser2SettingsN[FS2_CURRENT].value = std::stod(result[U_FOC2_CUR]);
+                Focuser2SettingsN[FS2_HOLD].value = std::stod(result[U_FOC2_HOLD]);
                 Focuser2SettingsNP.s = IPS_OK;
                 IDSetNumber(&Focuser2SettingsNP, nullptr);
             }
