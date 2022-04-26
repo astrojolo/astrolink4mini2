@@ -166,17 +166,17 @@ private:
     INumberVectorProperty Focuser1SettingsNP;
     enum
     {
-        FS_STEP_SIZE,
-        FS_COMPENSATION,
-        FS_COMP_THRESHOLD
+        FS1_STEP_SIZE,
+        FS1_COMPENSATION,
+        FS1_COMP_THRESHOLD
     };
     INumber Focuser2SettingsN[3];
-    INumberVectorProperty Focuser1SettingsNP;
+    INumberVectorProperty Focuser2SettingsNP;
     enum
     {
-        FS_STEP_SIZE,
-        FS_COMPENSATION,
-        FS_COMP_THRESHOLD
+        FS2_STEP_SIZE,
+        FS2_COMPENSATION,
+        FS2_COMP_THRESHOLD
     };    
 
     static constexpr const char *POWER_TAB{"Power"};
