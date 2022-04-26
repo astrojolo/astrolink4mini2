@@ -63,9 +63,25 @@ bool IndiAstroLink4mini2::Handshake()
         else
         {
             DEBUG(INDI::Logger::DBG_DEBUG, "Handshake success");
+
+            DEBUGF(INDI::Logger::DBG_DEBUG, "Focuser index initial set to %i", focuserIndex);
+            char res[ASTROLINK4_LEN] = {0};
+            if (sendCommand("u", res))
+            {
+                DEBUGF(INDI::Logger::DBG_DEBUG, "Initial field setup %s", res);
+                std::vector<std::string> result = split(res, ":");
+                int index = focuserIndex > 0 ? U_FOC2_MAX : U_FOC1_MAX;
+                FocusMaxPosN[0].value = std::stod(result[index]);
+                FocusMaxPosNP.s = IPS_OK;
+                IDSetNumber(&FocusMaxPosNP, nullptr);
+                index = focuserIndex > 0 ? U_FOC2_REV : U_FOC1_REV;
+                FocusReverseS[0].s = (std::stoi(result[index]) > 0) ? ISS_ON : ISS_OFF;
+                FocusReverseS[1].s = (std::stoi(result[index]) == 0) ? ISS_ON : ISS_OFF;
+                FocusReverseSP.s = IPS_OK;
+                IDSetSwitch(&FocusReverseSP, nullptr);
+            }
+
             SetTimer(POLLTIME);
-            // Require update
-            // FocuserSettingsNP.s = IPS_BUSY;
             return true;
         }
     }
@@ -93,23 +109,6 @@ bool IndiAstroLink4mini2::initProperties()
     char focuserSelectLabel[15];
     memset(focuserSelectLabel, 0, 15);
     focuserIndex = IUGetConfigOnSwitchLabel(getDeviceName(), FocuserSelectSP.name, focuserSelectLabel, 15) == 0 ? 0 : 1;
-    DEBUGF(INDI::Logger::DBG_DEBUG, "Focuser index initial set to %i", focuserIndex);
-
-    char res[ASTROLINK4_LEN] = {0};
-    if (sendCommand("u", res))
-    {
-        DEBUGF(INDI::Logger::DBG_DEBUG, "Initial field setup %s", res);
-        std::vector<std::string> result = split(res, ":");
-        int index = focuserIndex > 0 ? U_FOC2_MAX : U_FOC1_MAX;
-        FocusMaxPosN[0].value = std::stod(result[index]);
-        FocusMaxPosNP.s = IPS_OK;
-        IDSetNumber(&FocusMaxPosNP, nullptr);
-        index = focuserIndex > 0 ? U_FOC2_REV : U_FOC1_REV;
-        FocusReverseS[0].s = (std::stoi(result[index]) > 0) ? ISS_ON : ISS_OFF;
-        FocusReverseS[1].s = (std::stoi(result[index]) == 0) ? ISS_ON : ISS_OFF;
-        FocusReverseSP.s = IPS_OK;
-        IDSetSwitch(&FocusReverseSP, nullptr);
-    }
 
     FI::SetCapability(FOCUSER_CAN_ABS_MOVE |
                       FOCUSER_CAN_REL_MOVE |
