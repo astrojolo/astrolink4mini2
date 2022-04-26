@@ -120,14 +120,14 @@ bool IndiAstroLink4mini2::initProperties()
     IUFillSwitchVector(&FocuserSelectSP, FocuserSelectS, 2, getDeviceName(), "FOCUSER_SELECT", "Focuser select", FOCUS_TAB, IP_RW, ISR_1OFMANY, 60, IPS_IDLE);
 
     // focuser settings
-    IUFillNumber(&Focuser1SettingsN[FS_STEP_SIZE], "FS1_STEP_SIZE", "Step size [um]", "%.2f", 0, 100, 0.1, 5.0);
-    IUFillNumber(&Focuser1SettingsN[FS_COMPENSATION], "FS1_COMPENSATION", "Compensation [steps/C]", "%.2f", -1000, 1000, 1, 0);
-    IUFillNumber(&Focuser1SettingsN[FS_COMP_THRESHOLD], "FS1_COMP_THRESHOLD", "Compensation threshold [steps]", "%.0f", 1, 1000, 10, 10);
+    IUFillNumber(&Focuser1SettingsN[FS1_STEP_SIZE], "FS1_STEP_SIZE", "Step size [um]", "%.2f", 0, 100, 0.1, 5.0);
+    IUFillNumber(&Focuser1SettingsN[FS1_COMPENSATION], "FS1_COMPENSATION", "Compensation [steps/C]", "%.2f", -1000, 1000, 1, 0);
+    IUFillNumber(&Focuser1SettingsN[FS1_COMP_THRESHOLD], "FS1_COMP_THRESHOLD", "Compensation threshold [steps]", "%.0f", 1, 1000, 10, 10);
     IUFillNumberVector(&Focuser1SettingsNP, Focuser1SettingsN, 3, getDeviceName(), "FOCUSER1_SETTINGS", "Focuser 1 settings", FOC1_SETTINGS_TAB, IP_RW, 60, IPS_IDLE);    
 
-    IUFillNumber(&Focuser2SettingsN[FS_STEP_SIZE], "FS2_STEP_SIZE", "Step size [um]", "%.2f", 0, 100, 0.1, 5.0);
-    IUFillNumber(&Focuser2SettingsN[FS_COMPENSATION], "FS2_COMPENSATION", "Compensation [steps/C]", "%.2f", -1000, 1000, 1, 0);
-    IUFillNumber(&Focuser2SettingsN[FS_COMP_THRESHOLD], "FS2_COMP_THRESHOLD", "Compensation threshold [steps]", "%.0f", 1, 1000, 10, 10);
+    IUFillNumber(&Focuser2SettingsN[FS2_STEP_SIZE], "FS2_STEP_SIZE", "Step size [um]", "%.2f", 0, 100, 0.1, 5.0);
+    IUFillNumber(&Focuser2SettingsN[FS2_COMPENSATION], "FS2_COMPENSATION", "Compensation [steps/C]", "%.2f", -1000, 1000, 1, 0);
+    IUFillNumber(&Focuser2SettingsN[FS2_COMP_THRESHOLD], "FS2_COMP_THRESHOLD", "Compensation threshold [steps]", "%.0f", 1, 1000, 10, 10);
     IUFillNumberVector(&Focuser2SettingsNP, Focuser2SettingsN, 3, getDeviceName(), "FOCUSER2_SETTINGS", "Focuser 2 settings", FOC2_SETTINGS_TAB, IP_RW, 60, IPS_IDLE);     
 
     return true;
