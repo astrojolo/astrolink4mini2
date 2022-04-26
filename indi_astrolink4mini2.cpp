@@ -682,7 +682,7 @@ bool IndiAstroLink4mini2::readDevice()
 
             if (Focuser1ModeSP.s != IPS_OK)
             {
-                Focuser1ModeS[FS1_MODE_UNI].s = FocuserModeS[FS1_MODE_MICRO_L].s = FocuserModeS[FS1_MODE_MICRO_H].s = ISS_OFF;
+                Focuser1ModeS[FS1_MODE_UNI].s = Focuser1ModeS[FS1_MODE_MICRO_L].s = Focuser1ModeS[FS1_MODE_MICRO_H].s = ISS_OFF;
                 if (!strcmp("0", result[U_FOC1_MODE].c_str()))
                     Focuser1ModeS[FS1_MODE_UNI].s = ISS_ON;
                 if (!strcmp("1", result[U_FOC1_MODE].c_str()))
@@ -695,7 +695,7 @@ bool IndiAstroLink4mini2::readDevice()
 
             if (Focuser2ModeSP.s != IPS_OK)
             {
-                Focuser2ModeS[FS2_MODE_UNI].s = FocuserModeS[FS2_MODE_MICRO_L].s = FocuserModeS[FS2_MODE_MICRO_H].s = ISS_OFF;
+                Focuser2ModeS[FS2_MODE_UNI].s = Focuser2ModeS[FS2_MODE_MICRO_L].s = Focuser2ModeS[FS2_MODE_MICRO_H].s = ISS_OFF;
                 if (!strcmp("0", result[U_FOC2_MODE].c_str()))
                     Focuser2ModeS[FS2_MODE_UNI].s = ISS_ON;
                 if (!strcmp("1", result[U_FOC2_MODE].c_str()))
