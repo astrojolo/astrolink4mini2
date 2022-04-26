@@ -370,6 +370,7 @@ bool IndiAstroLink4mini2::readDevice()
             std::vector<std::string> result = split(res, ":");
             if (FocusMaxPosNP.s != IPS_OK)
             {
+                DEBUGF(INDI::Logger::DBG_DEBUG, "Update maxpos, focuser %i, res %s", focuserIndex, res);
                 int index = focuserIndex > 0 ? U_FOC2_MAX : U_FOC1_MAX;
                 FocusMaxPosN[0].value = std::stod(result[index]);
                 FocusMaxPosNP.s = IPS_OK;
@@ -377,6 +378,7 @@ bool IndiAstroLink4mini2::readDevice()
             }    
             if (FocusReverseSP.s != IPS_OK)
             {
+                DEBUGF(INDI::Logger::DBG_DEBUG, "Update reverse, focuser %i, res %s", focuserIndex, res);
                 int index = focuserIndex > 0 ? U_FOC2_REV : U_FOC1_REV;
                 FocusReverseS[0].s = (std::stoi(result[index]) > 0) ? ISS_ON : ISS_OFF;
                 FocusReverseS[1].s = (std::stoi(result[index]) == 0) ? ISS_ON : ISS_OFF;
