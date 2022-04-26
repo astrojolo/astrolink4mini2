@@ -433,7 +433,7 @@ bool IndiAstroLink4mini2::readDevice()
         if (sendCommand("u", res))
         {
             std::vector<std::string> result = split(res, ":");
-
+            DEBUGF(INDI::Logger::DBG_DEBUG, "Update settings, focuser %i, res %s", getFindex(), res);
             Focuser1SettingsN[FS1_STEP_SIZE].value = std::stod(result[U_FOC1_STEP]) / 100.0;
             Focuser1SettingsN[FS1_COMPENSATION].value = std::stod(result[U_FOC1_COMPSTEPS]) / 100.0;
             Focuser1SettingsN[FS1_COMP_THRESHOLD].value = std::stod(result[U_FOC1_COMPTRIGGER]);
@@ -447,7 +447,7 @@ bool IndiAstroLink4mini2::readDevice()
         if (sendCommand("u", res))
         {
             std::vector<std::string> result = split(res, ":");
-
+            DEBUGF(INDI::Logger::DBG_DEBUG, "Update settings, focuser %i, res %s", getFindex(), res);
             Focuser2SettingsN[FS2_STEP_SIZE].value = std::stod(result[U_FOC2_STEP]) / 100.0;
             Focuser2SettingsN[FS2_COMPENSATION].value = std::stod(result[U_FOC2_COMPSTEPS]) / 100.0;
             Focuser2SettingsN[FS2_COMP_THRESHOLD].value = std::stod(result[U_FOC2_COMPTRIGGER]);
