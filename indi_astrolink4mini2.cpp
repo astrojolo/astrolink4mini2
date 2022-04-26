@@ -256,7 +256,7 @@ bool IndiAstroLink4mini2::ISNewNumber(const char *dev, const char *name, double 
             updates[U_FOC1_COMPSTEPS] = doubleToStr(values[FS1_COMPENSATION] * 100.0);
             updates[U_FOC1_COMPTRIGGER] = doubleToStr(values[FS1_COMP_THRESHOLD]);
             updates[U_FOC1_SPEED] = intToStr(values[FS1_SPEED]);
-            updates[U_FOC1_ACC] = intToStr(values[FS1_SPEED] * 2.0);
+            updates[U_FOC1_ACC] = intToStr(values[FS1_SPEED] * 5.0);
             updates[U_FOC1_CUR] = intToStr(values[FS1_CURRENT] / 10.0);
             updates[U_FOC1_HOLD] = intToStr(values[FS1_HOLD]);
             allOk = allOk && updateSettings("u", "U", updates);
@@ -281,7 +281,7 @@ bool IndiAstroLink4mini2::ISNewNumber(const char *dev, const char *name, double 
             updates[U_FOC2_COMPSTEPS] = doubleToStr(values[FS2_COMPENSATION] * 100.0);
             updates[U_FOC2_COMPTRIGGER] = doubleToStr(values[FS2_COMP_THRESHOLD]);
             updates[U_FOC2_SPEED] = intToStr(values[FS2_SPEED]);
-            updates[U_FOC2_ACC] = intToStr(values[FS2_SPEED] * 2.0);
+            updates[U_FOC2_ACC] = intToStr(values[FS2_SPEED] * 5.0);
             updates[U_FOC2_CUR] = intToStr(values[FS2_CURRENT] / 10.0);
             updates[U_FOC2_HOLD] = intToStr(values[FS2_HOLD]);
             allOk = allOk && updateSettings("u", "U", updates);
