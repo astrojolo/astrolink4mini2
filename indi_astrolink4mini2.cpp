@@ -135,7 +135,7 @@ bool IndiAstroLink4mini2::updateProperties()
 
          // force update from the device
          FocuserSelectSP.s = FocusMaxPosNP.s = FocusReverseSP.s = FocusAbsPosNP.s = IPS_BUSY;
-
+         DEBUG(INDI::Logger::DBG_SESSION, "Init complete");
          initComplete = true;
     }
     else
