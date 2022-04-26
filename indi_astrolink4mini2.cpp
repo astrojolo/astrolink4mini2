@@ -193,7 +193,7 @@ bool IndiAstroLink4mini2::saveConfigItems(FILE *fp)
 IPState IndiAstroLink4mini2::MoveAbsFocuser(uint32_t targetTicks)
 {
     char cmd[ASTROLINK4_LEN] = {0}, res[ASTROLINK4_LEN] = {0};
-    snprintf(cmd, ASTROLINK4_LEN, "R:%i:%u", getFocuserIndex(),  targetTicks);
+    snprintf(cmd, ASTROLINK4_LEN, "R:%i:%u", focuserIndex,  targetTicks);
     return (sendCommand(cmd, res)) ? IPS_BUSY : IPS_ALERT;
 }
 
@@ -205,13 +205,13 @@ IPState IndiAstroLink4mini2::MoveRelFocuser(FocusDirection dir, uint32_t ticks)
 bool IndiAstroLink4mini2::AbortFocuser()
 {
     char cmd[ASTROLINK4_LEN] = {0}, res[ASTROLINK4_LEN] = {0};
-    snprintf(cmd, ASTROLINK4_LEN, "H:%i", getFocuserIndex());
+    snprintf(cmd, ASTROLINK4_LEN, "H:%i", focuserIndex);
     return (sendCommand(cmd, res));
 }
 
 bool IndiAstroLink4mini2::ReverseFocuser(bool enabled)
 {
-    int index = getFocuserIndex() > 0 ? U_FOC2_REV : U_FOC1_REV;
+    int index = focuserIndex > 0 ? U_FOC2_REV : U_FOC1_REV;
     if (updateSettings("u", "U", index, (enabled) ? "1" : "0"))
     {
         FocusReverseSP.s = IPS_BUSY;
@@ -226,7 +226,7 @@ bool IndiAstroLink4mini2::ReverseFocuser(bool enabled)
 bool IndiAstroLink4mini2::SyncFocuser(uint32_t ticks)
 {
     char cmd[ASTROLINK4_LEN] = {0}, res[ASTROLINK4_LEN] = {0};
-    snprintf(cmd, ASTROLINK4_LEN, "P:%i:%u", getFocuserIndex(), ticks);
+    snprintf(cmd, ASTROLINK4_LEN, "P:%i:%u", focuserIndex, ticks);
     if (sendCommand(cmd, res))
     {
         FocusAbsPosNP.s = IPS_BUSY;
@@ -241,7 +241,7 @@ bool IndiAstroLink4mini2::SyncFocuser(uint32_t ticks)
 
 bool IndiAstroLink4mini2::SetFocuserMaxPosition(uint32_t ticks)
 {
-    int index = getFocuserIndex() > 0 ? U_FOC2_MAX : U_FOC1_MAX;
+    int index = focuserIndex > 0 ? U_FOC2_MAX : U_FOC1_MAX;
     if (updateSettings("u", "U", index, std::to_string(ticks).c_str()))
     {
         FocusMaxPosNP.s = IPS_BUSY;
