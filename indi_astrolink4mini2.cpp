@@ -163,13 +163,14 @@ bool IndiAstroLink4mini2::ISNewSwitch(const char *dev, const char *name, ISState
             {
                 setFindex((strcmp(FocuserSelectS[0].name, names[0])) ? 1 : 0);
                 DEBUGF(INDI::Logger::DBG_DEBUG, "Focuser index set by switch to %i", getFindex());
+                FocuserSelectSP.s = FocusMaxPosNP.s = FocusReverseSP.s = FocusAbsPosNP.s = IPS_BUSY;
+                IUUpdateSwitch(&FocuserSelectSP, states, names, n);
+                IDSetSwitch(&FocuserSelectSP, nullptr);
+                IDSetSwitch(&FocusReverseSP, nullptr);
+                IDSetNumber(&FocusMaxPosNP, nullptr);
+                IDSetNumber(&FocusAbsPosNP, nullptr);
             }
-            FocuserSelectSP.s = FocusMaxPosNP.s = FocusReverseSP.s = FocusAbsPosNP.s = IPS_BUSY;
-            IUUpdateSwitch(&FocuserSelectSP, states, names, n);
-            IDSetSwitch(&FocuserSelectSP, nullptr);
-            IDSetSwitch(&FocusReverseSP, nullptr);
-            IDSetNumber(&FocusMaxPosNP, nullptr);
-            IDSetNumber(&FocusAbsPosNP, nullptr);
+
             return true;
         }
 
@@ -195,11 +196,6 @@ bool IndiAstroLink4mini2::saveConfigItems(FILE *fp)
 bool IndiAstroLink4mini2::loadConfig(bool silent, const char *property)
 {
     bool result = INDI::DefaultDevice::loadConfig(silent, property);
-    // force update from the device
-    /*FocusMaxPosNP.s = FocusReverseSP.s = FocusAbsPosNP.s = IPS_BUSY;
-    IDSetSwitch(&FocusReverseSP, nullptr);
-    IDSetNumber(&FocusMaxPosNP, nullptr);
-    IDSetNumber(&FocusAbsPosNP, nullptr);    */
     DEBUG(INDI::Logger::DBG_DEBUG, "Init complete");
     initComplete = true;
 
@@ -347,9 +343,7 @@ bool IndiAstroLink4mini2::readDevice()
     {
         std::vector<std::string> result = split(res, ":");
         result.erase(result.begin());
-
-        //DEBUGF(INDI::Logger::DBG_SESSION, "Selected %i", selectedFocuser);
-        
+ 
         int focuserPosition = std::stoi(result[getFindex() == 1 ? Q_FOC2_POS : Q_FOC1_POS]);
         int stepsToGo = std::stod(result[getFindex() == 1 ? Q_FOC2_TO_GO : Q_FOC1_TO_GO]);
         FocusAbsPosN[0].value = focuserPosition;
@@ -454,7 +448,6 @@ bool IndiAstroLink4mini2::updateSettings(const char *getCom, const char *setCom,
 
 int IndiAstroLink4mini2::getFindex()
 {
-    DEBUGF(INDI::Logger::DBG_DEBUG, "Focuser get index %i", focuserIndex);
     return focuserIndex;
 }
 
