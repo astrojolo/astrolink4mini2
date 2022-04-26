@@ -160,6 +160,49 @@ bool IndiAstroLink4mini2::ISNewNumber(const char *dev, const char *name, double 
 {
     if (dev && !strcmp(dev, getDeviceName()))
     {
+        // Focuser settings
+        if (!strcmp(name, Focuser1SettingsNP.name))
+        {
+            bool allOk = true;
+            std::map<int, std::string> updates;
+            updates[U_FOC1_STEP] = doubleToStr(values[FS1_STEP_SIZE] * 100.0);
+            updates[U_FOC1_COMPSTEPS] = doubleToStr(values[FS1_COMPENSATION] * 100.0);
+            updates[U_FOC1_COMPTRIGGER] = doubleToStr(values[FS1_COMP_THRESHOLD]);
+            allOk = allOk && updateSettings("u", "U", updates);
+            updates.clear();
+            if (allOk)
+            {
+                Focuser1SettingsNP.s = IPS_BUSY;
+                IUUpdateNumber(&Focuser1SettingsNP, values, names, n);
+                IDSetNumber(&Focuser1SettingsNP, nullptr);
+                DEBUGF(INDI::Logger::DBG_SESSION, "Focuser 1 temperature compensation is %s", (values[FS1_COMPENSATION] > 0) "enabled" : "disabled");
+                return true;
+            }
+            Focuser1SettingsNP.s = IPS_ALERT;
+            return true;
+        }
+
+        if (!strcmp(name, Focuser2SettingsNP.name))
+        {
+            bool allOk = true;
+            std::map<int, std::string> updates;
+            updates[U_FOC2_STEP] = doubleToStr(values[FS2_STEP_SIZE] * 100.0);
+            updates[U_FOC2_COMPSTEPS] = doubleToStr(values[FS2_COMPENSATION] * 100.0);
+            updates[U_FOC2_COMPTRIGGER] = doubleToStr(values[FS2_COMP_THRESHOLD]);
+            allOk = allOk && updateSettings("u", "U", updates);
+            updates.clear();
+            if (allOk)
+            {
+                Focuser2SettingsNP.s = IPS_BUSY;
+                IUUpdateNumber(&Focuser2SettingsNP, values, names, n);
+                IDSetNumber(&Focuser2SettingsNP, nullptr);
+                DEBUGF(INDI::Logger::DBG_SESSION, "Focuser 2 temperature compensation is %s", (values[FS2_COMPENSATION] > 0) "enabled" : "disabled");
+                return true;
+            }
+            Focuser2SettingsNP.s = IPS_ALERT;
+            return true;
+        }        
+
         if (strstr(name, "FOCUS"))
             return FI::processNumber(dev, name, values, names, n);
     }
@@ -385,6 +428,34 @@ bool IndiAstroLink4mini2::readDevice()
     }
 
     // update settings data if was changed
+    if (Focuser1SettingsNP.s != IPS_OK)
+    {
+        if (sendCommand("u", res))
+        {
+            std::vector<std::string> result = split(res, ":");
+
+            Focuser1SettingsN[FS1_STEP_SIZE].value = std::stod(result[U_FOC1_STEP]) / 100.0;
+            Focuser1SettingsN[FS1_COMPENSATION].value = std::stod(result[U_FOC1_COMPSTEPS]) / 100.0;
+            Focuser1SettingsN[FS1_COMP_THRESHOLD].value = std::stod(result[U_FOC1_COMPTRIGGER]);
+            Focuser1SettingsNP.s = IPS_OK;
+            IDSetNumber(&Focuser1SettingsNP, nullptr);
+        }
+    }
+
+    if (Focuser2SettingsNP.s != IPS_OK)
+    {
+        if (sendCommand("u", res))
+        {
+            std::vector<std::string> result = split(res, ":");
+
+            Focuser2SettingsN[FS2_STEP_SIZE].value = std::stod(result[U_FOC2_STEP]) / 100.0;
+            Focuser2SettingsN[FS2_COMPENSATION].value = std::stod(result[U_FOC2_COMPSTEPS]) / 100.0;
+            Focuser2SettingsN[FS2_COMP_THRESHOLD].value = std::stod(result[U_FOC2_COMPTRIGGER]);
+            Focuser2SettingsNP.s = IPS_OK;
+            IDSetNumber(&Focuser2SettingsNP, nullptr);
+        }
+    }    
+
     if (FocusMaxPosNP.s != IPS_OK || FocusReverseSP.s != IPS_OK || FocuserSelectSP.s != IPS_OK)
     {
         if (sendCommand("u", res))
