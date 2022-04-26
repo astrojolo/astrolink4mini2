@@ -159,7 +159,7 @@ bool IndiAstroLink4mini2::ISNewSwitch(const char *dev, const char *name, ISState
         // Stepper select
         if (!strcmp(name, FocuserSelectSP.name))
         {
-            //focuserIndex = (strcmp(FocuserSelectS[0].name, names[0])) ? 1 : 0;
+            focuserIndex = (strcmp(FocuserSelectS[0].name, names[0])) ? 1 : 0;
             FocuserSelectSP.s = FocusMaxPosNP.s = FocusReverseSP.s = FocusAbsPosNP.s = IPS_BUSY;
             IUUpdateSwitch(&FocuserSelectSP, states, names, n);
             IDSetSwitch(&FocuserSelectSP, nullptr);
@@ -192,8 +192,7 @@ bool IndiAstroLink4mini2::loadConfig(bool silent, const char *property)
 {
     bool result = INDI::DefaultDevice::loadConfig(silent, property);
     // force update from the device
-    FocuserSelectSP.s = FocusMaxPosNP.s = FocusReverseSP.s = FocusAbsPosNP.s = IPS_BUSY;
-    IDSetSwitch(&FocuserSelectSP, nullptr);
+    FocusMaxPosNP.s = FocusReverseSP.s = FocusAbsPosNP.s = IPS_BUSY;
     IDSetSwitch(&FocusReverseSP, nullptr);
     IDSetNumber(&FocusMaxPosNP, nullptr);
     IDSetNumber(&FocusAbsPosNP, nullptr);    
