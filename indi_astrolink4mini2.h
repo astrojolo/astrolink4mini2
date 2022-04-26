@@ -130,6 +130,7 @@ protected:
     virtual const char *getDefaultName();
     virtual void TimerHit();
     virtual bool saveConfigItems(FILE *fp);
+    virtual bool loadConfig(bool silent, const char *property);
     virtual bool sendCommand(const char * cmd, char * res);
 
     // Focuser Overrides
