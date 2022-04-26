@@ -128,6 +128,23 @@ bool IndiAstroLink4mini2::initProperties()
     IUFillNumber(&PowerDataN[POW_WH], "WH", "Energy consumed [Wh]", "%.1f", 0, 10000, 10, 0);
     IUFillNumberVector(&PowerDataNP, PowerDataN, 4, getDeviceName(), "POWER_DATA", "Power data", POWER_TAB, IP_RO, 60, IPS_IDLE);
 
+    // Power lines
+    IUFillSwitch(&Power1S[0], "PWR1BTN_ON", "ON", ISS_OFF);
+    IUFillSwitch(&Power1S[1], "PWR1BTN_OFF", "OFF", ISS_ON);
+    IUFillSwitchVector(&Power1SP, Power1S, 2, getDeviceName(), "DC1", "Port 1", POWER_TAB, IP_RW, ISR_1OFMANY, 0, IPS_IDLE);
+
+    IUFillSwitch(&Power2S[0], "PWR2BTN_ON", "ON", ISS_OFF);
+    IUFillSwitch(&Power2S[1], "PWR2BTN_OFF", "OFF", ISS_ON);
+    IUFillSwitchVector(&Power2SP, Power2S, 2, getDeviceName(), "DC2", "Port 2", POWER_TAB, IP_RW, ISR_1OFMANY, 0, IPS_IDLE);
+
+    IUFillSwitch(&Power3S[0], "PWR3BTN_ON", "ON", ISS_OFF);
+    IUFillSwitch(&Power3S[1], "PWR3BTN_OFF", "OFF", ISS_ON);
+    IUFillSwitchVector(&Power3SP, Power3S, 2, getDeviceName(), "DC3", "Port 3", POWER_TAB, IP_RW, ISR_1OFMANY, 0, IPS_IDLE);
+
+    IUFillNumber(&PWMN[0], "PWM1_VAL", "A", "%3.0f", 0, 100, 10, 0);
+    IUFillNumber(&PWMN[1], "PWM2_VAL", "B", "%3.0f", 0, 100, 10, 0);
+    IUFillNumberVector(&PWMNP, PWMN, 2, getDeviceName(), "PWM", "PWM", POWER_TAB, IP_RW, 60, IPS_IDLE);
+
     // focuser settings
     IUFillNumber(&Focuser1SettingsN[FS1_STEP_SIZE], "FS1_STEP_SIZE", "Step size [um]", "%.2f", 0, 100, 0.1, 5.0);
     IUFillNumber(&Focuser1SettingsN[FS1_COMPENSATION], "FS1_COMPENSATION", "Compensation [steps/C]", "%.2f", -1000, 1000, 1, 0);
@@ -160,6 +177,10 @@ bool IndiAstroLink4mini2::updateProperties()
         defineProperty(&Focuser1SettingsNP);
         defineProperty(&Focuser2SettingsNP);
         defineProperty(&PowerDataNP);
+        defineProperty(&Power1SP);
+        defineProperty(&Power2SP);
+        defineProperty(&Power3SP);
+        defineProperty(&PWMNP);
     }
     else
     {
@@ -167,6 +188,10 @@ bool IndiAstroLink4mini2::updateProperties()
         deleteProperty(Focuser1SettingsNP.name);
         deleteProperty(Focuser2SettingsNP.name);
         deleteProperty(FocuserSelectSP.name);
+        deleteProperty(Power1SP.name);
+        deleteProperty(Power2SP.name);
+        deleteProperty(Power3SP.name);
+        deleteProperty(PWMNP.name);
         WI::updateProperties();
         FI::updateProperties();
     }
@@ -178,6 +203,27 @@ bool IndiAstroLink4mini2::ISNewNumber(const char *dev, const char *name, double 
 {
     if (dev && !strcmp(dev, getDeviceName()))
     {
+        // Handle PWM
+        if (!strcmp(name, PWMNP.name))
+        {
+            bool allOk = true;
+            if (PWMN[0].value != values[0])
+            {
+                sprintf(cmd, "B:0:%d", static_cast<uint8_t>(values[0]));
+                allOk = allOk && sendCommand(cmd, res);
+            }
+            if (PWMN[1].value != values[1])
+            {
+                sprintf(cmd, "B:1:%d", static_cast<uint8_t>(values[1]));
+                allOk = allOk && sendCommand(cmd, res);
+            }
+            PWMNP.s = (allOk) ? IPS_BUSY : IPS_ALERT;
+            if (allOk)
+                IUUpdateNumber(&PWMNP, values, names, n);
+            IDSetNumber(&PWMNP, nullptr);
+            return true;
+        }
+
         // Focuser settings
         if (!strcmp(name, Focuser1SettingsNP.name))
         {
@@ -458,7 +504,12 @@ bool IndiAstroLink4mini2::readDevice()
             {
                 ParametersNP.s = IPS_IDLE;
             }
-            
+
+            PWMN[0].value = std::stod(result[Q_PWM1]);
+            PWMN[1].value = std::stod(result[Q_PWM2]);
+            PWMNP.s = IPS_OK;
+            IDSetNumber(&PWMNP, nullptr);
+
             PowerDataN[POW_ITOT].value = std::stod(result[Q_ITOT]);
             PowerDataN[POW_REG].value = std::stod(result[Q_VREG]);
             PowerDataN[POW_VIN].value = std::stod(result[Q_VIN]);

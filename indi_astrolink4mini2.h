@@ -196,6 +196,15 @@ private:
         POW_WH
     };
 
+    ISwitch Power1S[2];
+    ISwitchVectorProperty Power1SP;
+    ISwitch Power2S[2];
+    ISwitchVectorProperty Power2SP;
+    ISwitch Power3S[2];
+    ISwitchVectorProperty Power3SP;
+    INumber PWMN[2];
+    INumberVectorProperty PWMNP;
+
     static constexpr const char *POWER_TAB{"Power"};
     static constexpr const char *ENVIRONMENT_TAB{"Environment"};
     static constexpr const char *SETTINGS_TAB{"Settings"};
