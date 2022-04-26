@@ -175,7 +175,7 @@ bool IndiAstroLink4mini2::ISNewNumber(const char *dev, const char *name, double 
                 Focuser1SettingsNP.s = IPS_BUSY;
                 IUUpdateNumber(&Focuser1SettingsNP, values, names, n);
                 IDSetNumber(&Focuser1SettingsNP, nullptr);
-                DEBUGF(INDI::Logger::DBG_SESSION, "Focuser 1 temperature compensation is %s", (values[FS1_COMPENSATION] > 0) "enabled" : "disabled");
+                DEBUGF(INDI::Logger::DBG_SESSION, "Focuser 1 temperature compensation is %s", (values[FS1_COMPENSATION] > 0) ? "enabled" : "disabled");
                 return true;
             }
             Focuser1SettingsNP.s = IPS_ALERT;
@@ -196,7 +196,7 @@ bool IndiAstroLink4mini2::ISNewNumber(const char *dev, const char *name, double 
                 Focuser2SettingsNP.s = IPS_BUSY;
                 IUUpdateNumber(&Focuser2SettingsNP, values, names, n);
                 IDSetNumber(&Focuser2SettingsNP, nullptr);
-                DEBUGF(INDI::Logger::DBG_SESSION, "Focuser 2 temperature compensation is %s", (values[FS2_COMPENSATION] > 0) "enabled" : "disabled");
+                DEBUGF(INDI::Logger::DBG_SESSION, "Focuser 2 temperature compensation is %s", (values[FS2_COMPENSATION] > 0) ? "enabled" : "disabled");
                 return true;
             }
             Focuser2SettingsNP.s = IPS_ALERT;
