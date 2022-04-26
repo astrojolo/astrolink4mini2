@@ -165,12 +165,12 @@ bool IndiAstroLink4mini2::initProperties()
     IUFillSwitch(&Focuser1ModeS[FS1_MODE_UNI], "FS1_MODE_UNI", "Unipolar", ISS_ON);
     IUFillSwitch(&Focuser1ModeS[FS1_MODE_MICRO_L], "FS1_MODE_MICRO_L", "Microstep 1/8", ISS_OFF);
     IUFillSwitch(&Focuser1ModeS[FS1_MODE_MICRO_H], "FS1_MODE_MICRO_H", "Microstep 1/32", ISS_OFF);
-    IUFillSwitchVector(&Focuser1ModeSP, Focuser1ModeS, 3, getDeviceName(), "FOCUSER_MODE", "Focuser mode", FOC1_SETTINGS_TAB, IP_RW, ISR_1OFMANY, 60, IPS_IDLE);
+    IUFillSwitchVector(&Focuser1ModeSP, Focuser1ModeS, 3, getDeviceName(), "FOCUSER1_MODE", "Focuser mode", FOC1_SETTINGS_TAB, IP_RW, ISR_1OFMANY, 60, IPS_IDLE);
 
     IUFillSwitch(&Focuser2ModeS[FS2_MODE_UNI], "FS2_MODE_UNI", "Unipolar", ISS_ON);
     IUFillSwitch(&Focuser2ModeS[FS2_MODE_MICRO_L], "FS2_MODE_MICRO_L", "Microstep 1/8", ISS_OFF);
     IUFillSwitch(&Focuser2ModeS[FS2_MODE_MICRO_H], "FS2_MODE_MICRO_H", "Microstep 1/32", ISS_OFF);
-    IUFillSwitchVector(&Focuser2ModeSP, Focuser2ModeS, 3, getDeviceName(), "FOCUSER_MODE", "Focuser mode", FOC2_SETTINGS_TAB, IP_RW, ISR_1OFMANY, 60, IPS_IDLE);
+    IUFillSwitchVector(&Focuser2ModeSP, Focuser2ModeS, 3, getDeviceName(), "FOCUSER2_MODE", "Focuser mode", FOC2_SETTINGS_TAB, IP_RW, ISR_1OFMANY, 60, IPS_IDLE);
 
     // Environment Group
     addParameter("WEATHER_TEMPERATURE", "Temperature (C)", -15, 35, 15);
