@@ -145,6 +145,11 @@ bool IndiAstroLink4mini2::initProperties()
     IUFillNumber(&PWMN[1], "PWM2_VAL", "B", "%3.0f", 0, 100, 10, 0);
     IUFillNumberVector(&PWMNP, PWMN, 2, getDeviceName(), "PWM", "PWM", POWER_TAB, IP_RW, 60, IPS_IDLE);
 
+    IUFillSwitch(&PowerDefaultOnS[0], "POW_DEF_ON1", "DC1", ISS_OFF);
+    IUFillSwitch(&PowerDefaultOnS[1], "POW_DEF_ON2", "DC2", ISS_OFF);
+    IUFillSwitch(&PowerDefaultOnS[2], "POW_DEF_ON3", "DC3", ISS_OFF);
+    IUFillSwitchVector(&PowerDefaultOnSP, PowerDefaultOnS, 3, getDeviceName(), "POW_DEF_ON", "Power default ON", POWER_TAB, IP_RW, ISR_NOFMANY, 60, IPS_IDLE);
+
     // focuser settings
     IUFillNumber(&Focuser1SettingsN[FS1_SPEED], "FS1_SPEED", "Speed [pps]", "%.0f", 10, 200, 1, 100);
     IUFillNumber(&Focuser1SettingsN[FS1_CURRENT], "FS1_CURRENT", "Current [mA]", "%.0f", 100, 2000, 100, 400);
@@ -199,6 +204,7 @@ bool IndiAstroLink4mini2::updateProperties()
         defineProperty(&Power2SP);
         defineProperty(&Power3SP);
         defineProperty(&PWMNP);
+        defineProperty(&PowerDefaultOnSP);
     }
     else
     {
@@ -212,6 +218,7 @@ bool IndiAstroLink4mini2::updateProperties()
         deleteProperty(Power2SP.name);
         deleteProperty(Power3SP.name);
         deleteProperty(PWMNP.name);
+        deleteProperty(PowerDefaultOnSP.name);
         WI::updateProperties();
         FI::updateProperties();
     }
@@ -347,6 +354,24 @@ bool IndiAstroLink4mini2::ISNewSwitch(const char *dev, const char *name, ISState
                 IUUpdateSwitch(&Power3SP, states, names, n);
 
             IDSetSwitch(&Power3SP, nullptr);
+            return true;
+        }
+
+        // Power default on
+        if (!strcmp(name, PowerDefaultOnSP.name))
+        {
+            std::map<int, std::string> updates;
+            updates[U_OUT1_DEF] = (states[0] == ISS_ON) ? "1" : "0";
+            updates[U_OUT2_DEF] = (states[1] == ISS_ON) ? "1" : "0";
+            updates[U_OUT3_DEF] = (states[2] == ISS_ON) ? "1" : "0";
+            if (updateSettings("u", "U", updates))
+            {
+                PowerDefaultOnSP.s = IPS_BUSY;
+                IUUpdateSwitch(&PowerDefaultOnSP, states, names, n);
+                IDSetSwitch(&PowerDefaultOnSP, nullptr);
+                return true;
+            }
+            PowerDefaultOnSP.s = IPS_ALERT;
             return true;
         }
 
@@ -650,11 +675,21 @@ bool IndiAstroLink4mini2::readDevice()
     }
 
     // update settings data if was changed
-    if (FocusMaxPosNP.s != IPS_OK || FocusReverseSP.s != IPS_OK || FocuserSelectSP.s != IPS_OK || Focuser1SettingsNP.s != IPS_OK || Focuser2SettingsNP.s != IPS_OK || Focuser1ModeSP.s != IPS_OK || Focuser2ModeSP.s != IPS_OK)
+    if (PowerDefaultOnSP.s != IPS_OK || FocusMaxPosNP.s != IPS_OK || FocusReverseSP.s != IPS_OK || FocuserSelectSP.s != IPS_OK || Focuser1SettingsNP.s != IPS_OK || Focuser2SettingsNP.s != IPS_OK || Focuser1ModeSP.s != IPS_OK || Focuser2ModeSP.s != IPS_OK)
     {
         if (sendCommand("u", res))
         {
             std::vector<std::string> result = split(res, ":");
+
+            if (PowerDefaultOnSP.s != IPS_OK)
+            {
+                PowerDefaultOnS[0].s = (std::stod(result[U_OUT1_DEF]) > 0) ? ISS_ON : ISS_OFF;
+                PowerDefaultOnS[1].s = (std::stod(result[U_OUT2_DEF]) > 0) ? ISS_ON : ISS_OFF;
+                PowerDefaultOnS[2].s = (std::stod(result[U_OUT3_DEF]) > 0) ? ISS_ON : ISS_OFF;
+                PowerDefaultOnSP.s = IPS_OK;
+                IDSetSwitch(&PowerDefaultOnSP, nullptr);
+            }
+
             if (Focuser1SettingsNP.s != IPS_OK)
             {
 

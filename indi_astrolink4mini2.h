@@ -229,6 +229,8 @@ private:
     ISwitchVectorProperty Power3SP;
     INumber PWMN[2];
     INumberVectorProperty PWMNP;
+    ISwitch PowerDefaultOnS[3];
+    ISwitchVectorProperty PowerDefaultOnSP;
 
     static constexpr const char *POWER_TAB{"Power"};
     static constexpr const char *ENVIRONMENT_TAB{"Environment"};
