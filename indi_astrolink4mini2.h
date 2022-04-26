@@ -164,22 +164,29 @@ private:
     bool updateSettings(const char *getCom, const char *setCom, std::map<int, std::string> values);
     std::vector<std::string> split(const std::string &input, const std::string &regex);
     std::string doubleToStr(double val);
+    std::string intToStr(double val);
 
     ISwitch FocuserSelectS[2];
     ISwitchVectorProperty FocuserSelectSP;
 
-    INumber Focuser1SettingsN[3];
+    INumber Focuser1SettingsN[6];
     INumberVectorProperty Focuser1SettingsNP;
     enum
     {
+        FS1_SPEED,
+        FS1_CURRENT,
+        FS1_HOLD,
         FS1_STEP_SIZE,
         FS1_COMPENSATION,
         FS1_COMP_THRESHOLD
     };
-    INumber Focuser2SettingsN[3];
+    INumber Focuser2SettingsN[6];
     INumberVectorProperty Focuser2SettingsNP;
     enum
     {
+        FS2_SPEED,
+        FS2_CURRENT,
+        FS2_HOLD,
         FS2_STEP_SIZE,
         FS2_COMPENSATION,
         FS2_COMP_THRESHOLD

@@ -146,15 +146,21 @@ bool IndiAstroLink4mini2::initProperties()
     IUFillNumberVector(&PWMNP, PWMN, 2, getDeviceName(), "PWM", "PWM", POWER_TAB, IP_RW, 60, IPS_IDLE);
 
     // focuser settings
+    IUFillNumber(&Focuser1SettingsN[FS1_SPEED], "FS1_SPEED", "Speed [pps]", "%.0f", 10, 200, 1, 100);
+    IUFillNumber(&Focuser1SettingsN[FS1_CURRENT], "FS1_CURRENT", "Current [mA]", "%.0f", 100, 2000, 100, 400);
+    IUFillNumber(&Focuser1SettingsN[FS1_HOLD], "FS1_HOLD", "Hold torque [%]", "%.0f", 0, 100, 10, 0);
     IUFillNumber(&Focuser1SettingsN[FS1_STEP_SIZE], "FS1_STEP_SIZE", "Step size [um]", "%.2f", 0, 100, 0.1, 5.0);
     IUFillNumber(&Focuser1SettingsN[FS1_COMPENSATION], "FS1_COMPENSATION", "Compensation [steps/C]", "%.2f", -1000, 1000, 1, 0);
     IUFillNumber(&Focuser1SettingsN[FS1_COMP_THRESHOLD], "FS1_COMP_THRESHOLD", "Compensation threshold [steps]", "%.0f", 1, 1000, 10, 10);
-    IUFillNumberVector(&Focuser1SettingsNP, Focuser1SettingsN, 3, getDeviceName(), "FOCUSER1_SETTINGS", "Focuser 1 settings", FOC1_SETTINGS_TAB, IP_RW, 60, IPS_IDLE);
+    IUFillNumberVector(&Focuser1SettingsNP, Focuser1SettingsN, 6, getDeviceName(), "FOCUSER1_SETTINGS", "Focuser 1 settings", FOC1_SETTINGS_TAB, IP_RW, 60, IPS_IDLE);
 
+    IUFillNumber(&Focuser2SettingsN[FS2_SPEED], "FS2_SPEED", "Speed [pps]", "%.0f", 10, 200, 1, 100);
+    IUFillNumber(&Focuser2SettingsN[FS2_CURRENT], "FS2_CURRENT", "Current [mA]", "%.0f", 100, 2000, 100, 400);
+    IUFillNumber(&Focuser2SettingsN[FS2_HOLD], "FS2_HOLD", "Hold torque [%]", "%.0f", 0, 100, 10, 0);
     IUFillNumber(&Focuser2SettingsN[FS2_STEP_SIZE], "FS2_STEP_SIZE", "Step size [um]", "%.2f", 0, 100, 0.1, 5.0);
     IUFillNumber(&Focuser2SettingsN[FS2_COMPENSATION], "FS2_COMPENSATION", "Compensation [steps/C]", "%.2f", -1000, 1000, 1, 0);
     IUFillNumber(&Focuser2SettingsN[FS2_COMP_THRESHOLD], "FS2_COMP_THRESHOLD", "Compensation threshold [steps]", "%.0f", 1, 1000, 10, 10);
-    IUFillNumberVector(&Focuser2SettingsNP, Focuser2SettingsN, 3, getDeviceName(), "FOCUSER2_SETTINGS", "Focuser 2 settings", FOC2_SETTINGS_TAB, IP_RW, 60, IPS_IDLE);
+    IUFillNumberVector(&Focuser2SettingsNP, Focuser2SettingsN, 6, getDeviceName(), "FOCUSER2_SETTINGS", "Focuser 2 settings", FOC2_SETTINGS_TAB, IP_RW, 60, IPS_IDLE);
 
     // Environment Group
     addParameter("WEATHER_TEMPERATURE", "Temperature (C)", -15, 35, 15);
@@ -235,6 +241,9 @@ bool IndiAstroLink4mini2::ISNewNumber(const char *dev, const char *name, double 
             updates[U_FOC1_STEP] = doubleToStr(values[FS1_STEP_SIZE] * 100.0);
             updates[U_FOC1_COMPSTEPS] = doubleToStr(values[FS1_COMPENSATION] * 100.0);
             updates[U_FOC1_COMPTRIGGER] = doubleToStr(values[FS1_COMP_THRESHOLD]);
+            updates[U_FOC1_SPEED] = intToStr(values[FS1_SPEED]);
+            updates[U_FOC1_CUR] = intToStr(values[FS1_CURRENT]);
+            updates[U_FOC1_HOLD] = intToStr(values[FS1_HOLD]);
             allOk = allOk && updateSettings("u", "U", updates);
             updates.clear();
             if (allOk)
@@ -256,6 +265,9 @@ bool IndiAstroLink4mini2::ISNewNumber(const char *dev, const char *name, double 
             updates[U_FOC2_STEP] = doubleToStr(values[FS2_STEP_SIZE] * 100.0);
             updates[U_FOC2_COMPSTEPS] = doubleToStr(values[FS2_COMPENSATION] * 100.0);
             updates[U_FOC2_COMPTRIGGER] = doubleToStr(values[FS2_COMP_THRESHOLD]);
+            updates[U_FOC2_SPEED] = intToStr(values[FS2_SPEED]);
+            updates[U_FOC2_CUR] = intToStr(values[FS2_CURRENT]);
+            updates[U_FOC2_HOLD] = intToStr(values[FS2_HOLD]);
             allOk = allOk && updateSettings("u", "U", updates);
             updates.clear();
             if (allOk)
@@ -594,6 +606,9 @@ bool IndiAstroLink4mini2::readDevice()
                 Focuser1SettingsN[FS1_STEP_SIZE].value = std::stod(result[U_FOC1_STEP]) / 100.0;
                 Focuser1SettingsN[FS1_COMPENSATION].value = std::stod(result[U_FOC1_COMPSTEPS]) / 100.0;
                 Focuser1SettingsN[FS1_COMP_THRESHOLD].value = std::stod(result[U_FOC1_COMPTRIGGER]);
+                Focuser1SettingsN[FS1_SPEED].value = std::stod(result[U_FOC1_SPEED]);
+                Focuser1SettingsN[FS1_CURRENT].value = std::stod(result[U_FOC1_CUR]);
+                Focuser1SettingsN[FS1_HOLD].value = std::stod(result[U_FOC1_HOLD]);
                 Focuser1SettingsNP.s = IPS_OK;
                 IDSetNumber(&Focuser1SettingsNP, nullptr);
             }
@@ -604,6 +619,9 @@ bool IndiAstroLink4mini2::readDevice()
                 Focuser2SettingsN[FS2_STEP_SIZE].value = std::stod(result[U_FOC2_STEP]) / 100.0;
                 Focuser2SettingsN[FS2_COMPENSATION].value = std::stod(result[U_FOC2_COMPSTEPS]) / 100.0;
                 Focuser2SettingsN[FS2_COMP_THRESHOLD].value = std::stod(result[U_FOC2_COMPTRIGGER]);
+                Focuser1SettingsN[FS2_SPEED].value = std::stod(result[U_FOC2_SPEED]);
+                Focuser1SettingsN[FS2_CURRENT].value = std::stod(result[U_FOC2_CUR]);
+                Focuser1SettingsN[FS2_HOLD].value = std::stod(result[U_FOC2_HOLD]);
                 Focuser2SettingsNP.s = IPS_OK;
                 IDSetNumber(&Focuser2SettingsNP, nullptr);
             }
@@ -649,6 +667,13 @@ std::string IndiAstroLink4mini2::doubleToStr(double val)
 {
     char buf[10];
     sprintf(buf, "%.0f", val);
+    return std::string(buf);
+}
+
+std::string IndiAstroLink4mini2::intToStr(double val)
+{
+    char buf[10];
+    sprintf(buf, "%i", (int)val);
     return std::string(buf);
 }
 
