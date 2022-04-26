@@ -119,16 +119,24 @@ bool IndiAstroLink4mini2::initProperties()
     IUFillSwitch(&FocuserSelectS[1], "FOC_SEL_2", "Focuser 2", (getFindex() > 0 ? ISS_ON : ISS_OFF));
     IUFillSwitchVector(&FocuserSelectSP, FocuserSelectS, 2, getDeviceName(), "FOCUSER_SELECT", "Focuser select", FOCUS_TAB, IP_RW, ISR_1OFMANY, 60, IPS_IDLE);
 
+    // Power readings
+    IUFillNumber(&PowerDataN[POW_VIN], "VIN", "Input voltage [V]", "%.1f", 0, 15, 10, 0);
+    IUFillNumber(&PowerDataN[POW_REG], "REG", "Regulated voltage [V]", "%.1f", 0, 15, 10, 0);
+    IUFillNumber(&PowerDataN[POW_ITOT], "ITOT", "Total current [A]", "%.1f", 0, 15, 10, 0);
+    IUFillNumber(&PowerDataN[POW_AH], "AH", "Energy consumed [Ah]", "%.1f", 0, 1000, 10, 0);
+    IUFillNumber(&PowerDataN[POW_WH], "WH", "Energy consumed [Wh]", "%.1f", 0, 10000, 10, 0);
+    IUFillNumberVector(&PowerDataNP, PowerDataN, 4, getDeviceName(), "POWER_DATA", "Power data", POWER_TAB, IP_RO, 60, IPS_IDLE);
+
     // focuser settings
     IUFillNumber(&Focuser1SettingsN[FS1_STEP_SIZE], "FS1_STEP_SIZE", "Step size [um]", "%.2f", 0, 100, 0.1, 5.0);
     IUFillNumber(&Focuser1SettingsN[FS1_COMPENSATION], "FS1_COMPENSATION", "Compensation [steps/C]", "%.2f", -1000, 1000, 1, 0);
     IUFillNumber(&Focuser1SettingsN[FS1_COMP_THRESHOLD], "FS1_COMP_THRESHOLD", "Compensation threshold [steps]", "%.0f", 1, 1000, 10, 10);
-    IUFillNumberVector(&Focuser1SettingsNP, Focuser1SettingsN, 3, getDeviceName(), "FOCUSER1_SETTINGS", "Focuser 1 settings", FOC1_SETTINGS_TAB, IP_RW, 60, IPS_IDLE);    
+    IUFillNumberVector(&Focuser1SettingsNP, Focuser1SettingsN, 3, getDeviceName(), "FOCUSER1_SETTINGS", "Focuser 1 settings", FOC1_SETTINGS_TAB, IP_RW, 60, IPS_IDLE);
 
     IUFillNumber(&Focuser2SettingsN[FS2_STEP_SIZE], "FS2_STEP_SIZE", "Step size [um]", "%.2f", 0, 100, 0.1, 5.0);
     IUFillNumber(&Focuser2SettingsN[FS2_COMPENSATION], "FS2_COMPENSATION", "Compensation [steps/C]", "%.2f", -1000, 1000, 1, 0);
     IUFillNumber(&Focuser2SettingsN[FS2_COMP_THRESHOLD], "FS2_COMP_THRESHOLD", "Compensation threshold [steps]", "%.0f", 1, 1000, 10, 10);
-    IUFillNumberVector(&Focuser2SettingsNP, Focuser2SettingsN, 3, getDeviceName(), "FOCUSER2_SETTINGS", "Focuser 2 settings", FOC2_SETTINGS_TAB, IP_RW, 60, IPS_IDLE);     
+    IUFillNumberVector(&Focuser2SettingsNP, Focuser2SettingsN, 3, getDeviceName(), "FOCUSER2_SETTINGS", "Focuser 2 settings", FOC2_SETTINGS_TAB, IP_RW, 60, IPS_IDLE);
 
     return true;
 }
@@ -201,7 +209,7 @@ bool IndiAstroLink4mini2::ISNewNumber(const char *dev, const char *name, double 
             }
             Focuser2SettingsNP.s = IPS_ALERT;
             return true;
-        }        
+        }
 
         if (strstr(name, "FOCUS"))
             return FI::processNumber(dev, name, values, names, n);
@@ -427,40 +435,43 @@ bool IndiAstroLink4mini2::readDevice()
         IDSetNumber(&FocusAbsPosNP, nullptr);
     }
 
-    // update settings data if was changed
-    if (Focuser1SettingsNP.s != IPS_OK)
+    if (result.size() > 5)
     {
-        if (sendCommand("u", res))
-        {
-            std::vector<std::string> result = split(res, ":");
-            DEBUGF(INDI::Logger::DBG_DEBUG, "Update settings, focuser %i, res %s", getFindex(), res);
-            Focuser1SettingsN[FS1_STEP_SIZE].value = std::stod(result[U_FOC1_STEP]) / 100.0;
-            Focuser1SettingsN[FS1_COMPENSATION].value = std::stod(result[U_FOC1_COMPSTEPS]) / 100.0;
-            Focuser1SettingsN[FS1_COMP_THRESHOLD].value = std::stod(result[U_FOC1_COMPTRIGGER]);
-            Focuser1SettingsNP.s = IPS_OK;
-            IDSetNumber(&Focuser1SettingsNP, nullptr);
-        }
+        PowerDataN[POW_ITOT].value = std::stod(result[Q_ITOT]);
+        PowerDataN[POW_REG].value = std::stod(result[Q_VREG]);
+        PowerDataN[POW_VIN].value = std::stod(result[Q_VIN]);
+        PowerDataN[POW_AH].value = std::stod(result[Q_AH]);
+        PowerDataN[POW_WH].value = std::stod(result[Q_WH]);
+        PowerDataNP.s = IPS_OK;
+        IDSetNumber(&PowerDataNP, nullptr);
     }
 
-    if (Focuser2SettingsNP.s != IPS_OK)
+    // update settings data if was changed
+    if (FocusMaxPosNP.s != IPS_OK || FocusReverseSP.s != IPS_OK || FocuserSelectSP.s != IPS_OK || Focuser1SettingsNP.s != IPS_OK || Focuser2SettingsNP.s != IPS_OK)
     {
         if (sendCommand("u", res))
         {
             std::vector<std::string> result = split(res, ":");
-            DEBUGF(INDI::Logger::DBG_DEBUG, "Update settings, focuser %i, res %s", getFindex(), res);
-            Focuser2SettingsN[FS2_STEP_SIZE].value = std::stod(result[U_FOC2_STEP]) / 100.0;
-            Focuser2SettingsN[FS2_COMPENSATION].value = std::stod(result[U_FOC2_COMPSTEPS]) / 100.0;
-            Focuser2SettingsN[FS2_COMP_THRESHOLD].value = std::stod(result[U_FOC2_COMPTRIGGER]);
-            Focuser2SettingsNP.s = IPS_OK;
-            IDSetNumber(&Focuser2SettingsNP, nullptr);
-        }
-    }    
+            if (Focuser1SettingsNP.s != IPS_OK)
+            {
 
-    if (FocusMaxPosNP.s != IPS_OK || FocusReverseSP.s != IPS_OK || FocuserSelectSP.s != IPS_OK)
-    {
-        if (sendCommand("u", res))
-        {
-            std::vector<std::string> result = split(res, ":");
+                DEBUGF(INDI::Logger::DBG_DEBUG, "Update settings, focuser 1, res %s", res);
+                Focuser1SettingsN[FS1_STEP_SIZE].value = std::stod(result[U_FOC1_STEP]) / 100.0;
+                Focuser1SettingsN[FS1_COMPENSATION].value = std::stod(result[U_FOC1_COMPSTEPS]) / 100.0;
+                Focuser1SettingsN[FS1_COMP_THRESHOLD].value = std::stod(result[U_FOC1_COMPTRIGGER]);
+                Focuser1SettingsNP.s = IPS_OK;
+                IDSetNumber(&Focuser1SettingsNP, nullptr);
+            }
+
+            if (Focuser2SettingsNP.s != IPS_OK)
+            {
+                DEBUGF(INDI::Logger::DBG_DEBUG, "Update settings, focuser 2, res %s", res);
+                Focuser2SettingsN[FS2_STEP_SIZE].value = std::stod(result[U_FOC2_STEP]) / 100.0;
+                Focuser2SettingsN[FS2_COMPENSATION].value = std::stod(result[U_FOC2_COMPSTEPS]) / 100.0;
+                Focuser2SettingsN[FS2_COMP_THRESHOLD].value = std::stod(result[U_FOC2_COMPTRIGGER]);
+                Focuser2SettingsNP.s = IPS_OK;
+                IDSetNumber(&Focuser2SettingsNP, nullptr);
+            }
             if (FocusMaxPosNP.s != IPS_OK)
             {
                 DEBUGF(INDI::Logger::DBG_DEBUG, "Update maxpos, focuser %i, res %s", getFindex(), res);
@@ -478,9 +489,9 @@ bool IndiAstroLink4mini2::readDevice()
                 FocusReverseSP.s = IPS_OK;
                 IDSetSwitch(&FocusReverseSP, nullptr);
             }
+            FocuserSelectSP.s = IPS_OK;
+            IDSetSwitch(&FocuserSelectSP, nullptr);
         }
-        FocuserSelectSP.s = IPS_OK;
-        IDSetSwitch(&FocuserSelectSP, nullptr);
     }
 
     return true;

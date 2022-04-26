@@ -177,7 +177,18 @@ private:
         FS2_STEP_SIZE,
         FS2_COMPENSATION,
         FS2_COMP_THRESHOLD
-    };    
+    };
+
+    INumber PowerDataN[5];
+    INumberVectorProperty PowerDataNP;
+    enum
+    {
+        POW_VIN,
+        POW_REG,
+        POW_ITOT,
+        POW_AH,
+        POW_WH
+    };
 
     static constexpr const char *POWER_TAB{"Power"};
     static constexpr const char *ENVIRONMENT_TAB{"Environment"};
