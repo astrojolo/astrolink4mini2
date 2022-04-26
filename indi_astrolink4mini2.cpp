@@ -193,6 +193,10 @@ bool IndiAstroLink4mini2::loadConfig(bool silent, const char *property)
     bool result = INDI::DefaultDevice::loadConfig(silent, property);
     // force update from the device
     FocuserSelectSP.s = FocusMaxPosNP.s = FocusReverseSP.s = FocusAbsPosNP.s = IPS_BUSY;
+    IDSetSwitch(&FocuserSelectSP, nullptr);
+    IDSetSwitch(&FocusReverseSP, nullptr);
+    IDSetNumber(&FocusMaxPosNP, nullptr);
+    IDSetNumber(&FocusAbsPosNP, nullptr);    
     DEBUG(INDI::Logger::DBG_DEBUG, "Init complete");
     initComplete = true;
 
