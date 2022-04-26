@@ -242,7 +242,7 @@ bool IndiAstroLink4mini2::ISNewNumber(const char *dev, const char *name, double 
             updates[U_FOC1_COMPSTEPS] = doubleToStr(values[FS1_COMPENSATION] * 100.0);
             updates[U_FOC1_COMPTRIGGER] = doubleToStr(values[FS1_COMP_THRESHOLD]);
             updates[U_FOC1_SPEED] = intToStr(values[FS1_SPEED]);
-            updates[U_FOC1_CUR] = intToStr(values[FS1_CURRENT]);
+            updates[U_FOC1_CUR] = intToStr(values[FS1_CURRENT] / 10.0);
             updates[U_FOC1_HOLD] = intToStr(values[FS1_HOLD]);
             allOk = allOk && updateSettings("u", "U", updates);
             updates.clear();
@@ -266,7 +266,7 @@ bool IndiAstroLink4mini2::ISNewNumber(const char *dev, const char *name, double 
             updates[U_FOC2_COMPSTEPS] = doubleToStr(values[FS2_COMPENSATION] * 100.0);
             updates[U_FOC2_COMPTRIGGER] = doubleToStr(values[FS2_COMP_THRESHOLD]);
             updates[U_FOC2_SPEED] = intToStr(values[FS2_SPEED]);
-            updates[U_FOC2_CUR] = intToStr(values[FS2_CURRENT]);
+            updates[U_FOC2_CUR] = intToStr(values[FS2_CURRENT] / 10.0);
             updates[U_FOC2_HOLD] = intToStr(values[FS2_HOLD]);
             allOk = allOk && updateSettings("u", "U", updates);
             updates.clear();
@@ -607,7 +607,7 @@ bool IndiAstroLink4mini2::readDevice()
                 Focuser1SettingsN[FS1_COMPENSATION].value = std::stod(result[U_FOC1_COMPSTEPS]) / 100.0;
                 Focuser1SettingsN[FS1_COMP_THRESHOLD].value = std::stod(result[U_FOC1_COMPTRIGGER]);
                 Focuser1SettingsN[FS1_SPEED].value = std::stod(result[U_FOC1_SPEED]);
-                Focuser1SettingsN[FS1_CURRENT].value = std::stod(result[U_FOC1_CUR]);
+                Focuser1SettingsN[FS1_CURRENT].value = std::stod(result[U_FOC1_CUR] * 10.0);
                 Focuser1SettingsN[FS1_HOLD].value = std::stod(result[U_FOC1_HOLD]);
                 Focuser1SettingsNP.s = IPS_OK;
                 IDSetNumber(&Focuser1SettingsNP, nullptr);
@@ -620,7 +620,7 @@ bool IndiAstroLink4mini2::readDevice()
                 Focuser2SettingsN[FS2_COMPENSATION].value = std::stod(result[U_FOC2_COMPSTEPS]) / 100.0;
                 Focuser2SettingsN[FS2_COMP_THRESHOLD].value = std::stod(result[U_FOC2_COMPTRIGGER]);
                 Focuser2SettingsN[FS2_SPEED].value = std::stod(result[U_FOC2_SPEED]);
-                Focuser2SettingsN[FS2_CURRENT].value = std::stod(result[U_FOC2_CUR]);
+                Focuser2SettingsN[FS2_CURRENT].value = std::stod(result[U_FOC2_CUR] * 10.0);
                 Focuser2SettingsN[FS2_HOLD].value = std::stod(result[U_FOC2_HOLD]);
                 Focuser2SettingsNP.s = IPS_OK;
                 IDSetNumber(&Focuser2SettingsNP, nullptr);
