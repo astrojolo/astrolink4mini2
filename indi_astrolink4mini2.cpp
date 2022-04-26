@@ -63,24 +63,7 @@ bool IndiAstroLink4mini2::Handshake()
         else
         {
             DEBUG(INDI::Logger::DBG_DEBUG, "Handshake success");
-
-            DEBUGF(INDI::Logger::DBG_DEBUG, "Focuser index initial set to %i", focuserIndex);
-            char res[ASTROLINK4_LEN] = {0};
-            if (sendCommand("u", res))
-            {
-                DEBUGF(INDI::Logger::DBG_DEBUG, "Initial field setup %s", res);
-                std::vector<std::string> result = split(res, ":");
-                int index = focuserIndex > 0 ? U_FOC2_MAX : U_FOC1_MAX;
-                FocusMaxPosN[0].value = std::stod(result[index]);
-                FocusMaxPosNP.s = IPS_OK;
-                IDSetNumber(&FocusMaxPosNP, nullptr);
-                index = focuserIndex > 0 ? U_FOC2_REV : U_FOC1_REV;
-                FocusReverseS[0].s = (std::stoi(result[index]) > 0) ? ISS_ON : ISS_OFF;
-                FocusReverseS[1].s = (std::stoi(result[index]) == 0) ? ISS_ON : ISS_OFF;
-                FocusReverseSP.s = IPS_OK;
-                IDSetSwitch(&FocusReverseSP, nullptr);
-            }
-
+            initComplete = false;
             SetTimer(POLLTIME);
             return true;
         }
@@ -90,7 +73,7 @@ bool IndiAstroLink4mini2::Handshake()
 
 void IndiAstroLink4mini2::TimerHit()
 {
-    if (isConnected())
+    if (isConnected() && initComplete)
     {
         readDevice();
         SetTimer(POLLTIME);
@@ -109,6 +92,7 @@ bool IndiAstroLink4mini2::initProperties()
     char focuserSelectLabel[15];
     memset(focuserSelectLabel, 0, 15);
     focuserIndex = IUGetConfigOnSwitchLabel(getDeviceName(), FocuserSelectSP.name, focuserSelectLabel, 15) == 0 ? 0 : 1;
+    initComplete = false;
 
     FI::SetCapability(FOCUSER_CAN_ABS_MOVE |
                       FOCUSER_CAN_REL_MOVE |
@@ -133,7 +117,7 @@ bool IndiAstroLink4mini2::initProperties()
 
     IUFillSwitch(&FocuserSelectS[0], "FOC_SEL_1", "Focuser 1", ISS_ON);
     IUFillSwitch(&FocuserSelectS[1], "FOC_SEL_2", "Focuser 2", ISS_OFF);
-    IUFillSwitchVector(&FocuserSelectSP, FocuserSelectS, 2, getDeviceName(), "FOCUSER_SELECT", "Focuser select", FOC_SETTINGS_TAB, IP_RW, ISR_1OFMANY, 60, IPS_IDLE);
+    IUFillSwitchVector(&FocuserSelectSP, FocuserSelectS, 2, getDeviceName(), "FOCUSER_SELECT", "Focuser select", FOCUS_TAB, IP_RW, ISR_1OFMANY, 60, IPS_IDLE);
 
 
     return true;
@@ -148,11 +132,17 @@ bool IndiAstroLink4mini2::updateProperties()
     {
          FI::updateProperties();
          defineProperty(&FocuserSelectSP);
+
+         // force update from the device
+         FocuserSelectSP.s = FocusMaxPosNP.s = FocusReverseSP.s = FocusAbsPosNP.s = IPS_BUSY;
+
+         initComplete = true;
     }
     else
     {
         deleteProperty(FocuserSelectSP.name);
         FI::updateProperties();
+        initComplete = false;
     }
 
     return true;
@@ -422,6 +412,9 @@ bool IndiAstroLink4mini2::updateSettings(const char *getCom, const char *setCom,
 
 bool IndiAstroLink4mini2::updateSettings(const char *getCom, const char *setCom, std::map<int, std::string> values)
 {
+    // Do not update till init is not complete
+    if(!initComplete) return false;
+
     char cmd[ASTROLINK4_LEN] = {0}, res[ASTROLINK4_LEN] = {0};
     snprintf(cmd, ASTROLINK4_LEN, "%s", getCom);
     if (sendCommand(cmd, res))

@@ -150,6 +150,7 @@ private:
     Connection::Serial *serialConnection { nullptr };
     char stopChar { 0xA };	// new line
     int focuserIndex;
+    bool initComplete = false;
     bool readDevice();
     bool updateSettings(const char * getCom, const char * setCom, int index, const char * value);
     bool updateSettings(const char * getCom, const char * setCom, std::map<int, std::string> values);
