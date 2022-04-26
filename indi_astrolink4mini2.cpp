@@ -62,6 +62,7 @@ bool IndiAstroLink4mini2::Handshake()
         }
         else
         {
+            DEBUG(INDI::Logger::DBG_DEBUG, "Handshake success");
             SetTimer(POLLTIME);
             // Require update
             // FocuserSettingsNP.s = IPS_BUSY;
@@ -92,10 +93,12 @@ bool IndiAstroLink4mini2::initProperties()
     char focuserSelectLabel[15];
     memset(focuserSelectLabel, 0, 15);
     focuserIndex = IUGetConfigOnSwitchLabel(getDeviceName(), FocuserSelectSP.name, focuserSelectLabel, 15) == 0 ? 0 : 1;
+    DEBUGF(INDI::Logger::DBG_DEBUG, "Focuser index initial set to %i", focuserIndex);
 
     char res[ASTROLINK4_LEN] = {0};
     if (sendCommand("u", res))
     {
+        DEBUGF(INDI::Logger::DBG_DEBUG, "Initial field setup %s", res);
         std::vector<std::string> result = split(res, ":");
         int index = focuserIndex > 0 ? U_FOC2_MAX : U_FOC1_MAX;
         FocusMaxPosN[0].value = std::stod(result[index]);
