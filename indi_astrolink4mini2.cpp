@@ -162,6 +162,16 @@ bool IndiAstroLink4mini2::initProperties()
     IUFillNumber(&Focuser2SettingsN[FS2_COMP_THRESHOLD], "FS2_COMP_THRESHOLD", "Compensation threshold [steps]", "%.0f", 1, 1000, 10, 10);
     IUFillNumberVector(&Focuser2SettingsNP, Focuser2SettingsN, 6, getDeviceName(), "FOCUSER2_SETTINGS", "Focuser 2 settings", FOC2_SETTINGS_TAB, IP_RW, 60, IPS_IDLE);
 
+    IUFillSwitch(&Focuser1ModeS[FS1_MODE_UNI], "FS1_MODE_UNI", "Unipolar", ISS_ON);
+    IUFillSwitch(&Focuser1ModeS[FS1_MODE_MICRO_L], "FS1_MODE_MICRO_L", "Microstep 1/8", ISS_OFF);
+    IUFillSwitch(&Focuser1ModeS[FS1_MODE_MICRO_H], "FS1_MODE_MICRO_H", "Microstep 1/32", ISS_OFF);
+    IUFillSwitchVector(&Focuser1ModeSP, Focuser1ModeS, 3, getDeviceName(), "FOCUSER_MODE", "Focuser mode", FOC1_SETTINGS_TAB, IP_RW, ISR_1OFMANY, 60, IPS_IDLE);
+
+    IUFillSwitch(&Focuser2ModeS[FS2_MODE_UNI], "FS2_MODE_UNI", "Unipolar", ISS_ON);
+    IUFillSwitch(&Focuser2ModeS[FS2_MODE_MICRO_L], "FS2_MODE_MICRO_L", "Microstep 1/8", ISS_OFF);
+    IUFillSwitch(&Focuser2ModeS[FS2_MODE_MICRO_H], "FS2_MODE_MICRO_H", "Microstep 1/32", ISS_OFF);
+    IUFillSwitchVector(&Focuser2ModeSP, Focuser2ModeS, 3, getDeviceName(), "FOCUSER_MODE", "Focuser mode", FOC2_SETTINGS_TAB, IP_RW, ISR_1OFMANY, 60, IPS_IDLE);
+
     // Environment Group
     addParameter("WEATHER_TEMPERATURE", "Temperature (C)", -15, 35, 15);
     addParameter("WEATHER_HUMIDITY", "Humidity %", 0, 100, 15);
@@ -182,6 +192,8 @@ bool IndiAstroLink4mini2::updateProperties()
         defineProperty(&FocuserSelectSP);
         defineProperty(&Focuser1SettingsNP);
         defineProperty(&Focuser2SettingsNP);
+        defineProperty(&Focuser1ModeSP);
+        defineProperty(&Focuser2ModeSP);
         defineProperty(&PowerDataNP);
         defineProperty(&Power1SP);
         defineProperty(&Power2SP);
@@ -193,6 +205,8 @@ bool IndiAstroLink4mini2::updateProperties()
         deleteProperty(PowerDataNP.name);
         deleteProperty(Focuser1SettingsNP.name);
         deleteProperty(Focuser2SettingsNP.name);
+        deleteProperty(Focuser1ModeSP.name);
+        deleteProperty(Focuser2ModeSP.name);
         deleteProperty(FocuserSelectSP.name);
         deleteProperty(Power1SP.name);
         deleteProperty(Power2SP.name);
@@ -331,6 +345,46 @@ bool IndiAstroLink4mini2::ISNewSwitch(const char *dev, const char *name, ISState
                 IUUpdateSwitch(&Power3SP, states, names, n);
 
             IDSetSwitch(&Power3SP, nullptr);
+            return true;
+        }
+
+        // Focuser Mode
+        if (!strcmp(name, Focuser1ModeSP.name))
+        {
+            std::string value = "0";
+            if (!strcmp(Focuser1ModeS[FS1_MODE_UNI].name, names[0]))
+                value = "0";
+            if (!strcmp(Focuser1ModeS[FS1_MODE_MICRO_L].name, names[0]))
+                value = "1";
+            if (!strcmp(Focuser1ModeS[FS1_MODE_MICRO_H].name, names[0]))
+                value = "2";
+            if (updateSettings("u", "U", U_FOC1_MODE, value.c_str()))
+            {
+                Focuser1ModeSP.s = IPS_BUSY;
+                IUUpdateSwitch(&Focuser1ModeSP, states, names, n);
+                IDSetSwitch(&Focuser1ModeSP, nullptr);
+                return true;
+            }
+            Focuser1ModeSP.s = IPS_ALERT;
+            return true;
+        }
+        if (!strcmp(name, Focuser2ModeSP.name))
+        {
+            std::string value = "0";
+            if (!strcmp(Focuser2ModeS[FS2_MODE_UNI].name, names[0]))
+                value = "0";
+            if (!strcmp(Focuser2ModeS[FS2_MODE_MICRO_L].name, names[0]))
+                value = "1";
+            if (!strcmp(Focuser2ModeS[FS2_MODE_MICRO_H].name, names[0]))
+                value = "2";
+            if (updateSettings("u", "U", U_FOC2_MODE, value.c_str()))
+            {
+                Focuser2ModeSP.s = IPS_BUSY;
+                IUUpdateSwitch(&Focuser2ModeSP, states, names, n);
+                IDSetSwitch(&Focuser2ModeSP, nullptr);
+                return true;
+            }
+            Focuser2ModeSP.s = IPS_ALERT;
             return true;
         }
 
@@ -594,7 +648,7 @@ bool IndiAstroLink4mini2::readDevice()
     }
 
     // update settings data if was changed
-    if (FocusMaxPosNP.s != IPS_OK || FocusReverseSP.s != IPS_OK || FocuserSelectSP.s != IPS_OK || Focuser1SettingsNP.s != IPS_OK || Focuser2SettingsNP.s != IPS_OK)
+    if (FocusMaxPosNP.s != IPS_OK || FocusReverseSP.s != IPS_OK || FocuserSelectSP.s != IPS_OK || Focuser1SettingsNP.s != IPS_OK || Focuser2SettingsNP.s != IPS_OK || Focuser1ModeSP.s != IPS_OK || Focuser2ModeSP.s != IPS_OK)
     {
         if (sendCommand("u", res))
         {
@@ -625,6 +679,33 @@ bool IndiAstroLink4mini2::readDevice()
                 Focuser2SettingsNP.s = IPS_OK;
                 IDSetNumber(&Focuser2SettingsNP, nullptr);
             }
+
+            if (Focuser1ModeSP.s != IPS_OK)
+            {
+                Focuser1ModeS[FS1_MODE_UNI].s = FocuserModeS[FS1_MODE_MICRO_L].s = FocuserModeS[FS1_MODE_MICRO_H].s = ISS_OFF;
+                if (!strcmp("0", result[U_FOC1_MODE].c_str()))
+                    Focuser1ModeS[FS1_MODE_UNI].s = ISS_ON;
+                if (!strcmp("1", result[U_FOC1_MODE].c_str()))
+                    Focuser1ModeS[FS1_MODE_MICRO_L].s = ISS_ON;
+                if (!strcmp("2", result[U_FOC1_MODE].c_str()))
+                    Focuser1ModeS[FS1_MODE_MICRO_H].s = ISS_ON;
+                Focuser1ModeSP.s = IPS_OK;
+                IDSetSwitch(&Focuser1ModeSP, nullptr);
+            }
+
+            if (Focuser2ModeSP.s != IPS_OK)
+            {
+                Focuser2ModeS[FS2_MODE_UNI].s = FocuserModeS[FS2_MODE_MICRO_L].s = FocuserModeS[FS2_MODE_MICRO_H].s = ISS_OFF;
+                if (!strcmp("0", result[U_FOC2_MODE].c_str()))
+                    Focuser2ModeS[FS2_MODE_UNI].s = ISS_ON;
+                if (!strcmp("1", result[U_FOC2_MODE].c_str()))
+                    Focuser2ModeS[FS2_MODE_MICRO_L].s = ISS_ON;
+                if (!strcmp("2", result[U_FOC2_MODE].c_str()))
+                    Focuser2ModeS[FS2_MODE_MICRO_H].s = ISS_ON;
+                Focuser2ModeSP.s = IPS_OK;
+                IDSetSwitch(&Focuser2ModeSP, nullptr);
+            }
+
             if (FocusMaxPosNP.s != IPS_OK)
             {
                 DEBUGF(INDI::Logger::DBG_DEBUG, "Update maxpos, focuser %i, res %s", getFindex(), res);

@@ -192,6 +192,24 @@ private:
         FS2_COMP_THRESHOLD
     };
 
+    ISwitch Focuser1ModeS[3];
+    ISwitchVectorProperty FocuserModeSP;
+    enum
+    {
+        FS1_MODE_UNI,
+        FS1_MODE_MICRO_L,
+        FS1_MODE_MICRO_H
+    };
+
+    ISwitch Focuser2ModeS[3];
+    ISwitchVectorProperty FocuserModeSP;
+    enum
+    {
+        FS2_MODE_UNI,
+        FS2_MODE_MICRO_L,
+        FS2_MODE_MICRO_H
+    };
+
     INumber PowerDataN[5];
     INumberVectorProperty PowerDataNP;
     enum
