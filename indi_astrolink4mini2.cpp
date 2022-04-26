@@ -280,6 +280,48 @@ bool IndiAstroLink4mini2::ISNewSwitch(const char *dev, const char *name, ISState
 {
     if (dev && !strcmp(dev, getDeviceName()))
     {
+        char cmd[ASTROLINK4_LEN] = {0};
+        char res[ASTROLINK4_LEN] = {0};
+
+        // handle power line 1
+        if (!strcmp(name, Power1SP.name))
+        {
+            sprintf(cmd, "C:0:%s", (strcmp(Power1S[0].name, names[0])) ? "0" : "1");
+            bool allOk = sendCommand(cmd, res);
+            Power1SP.s = allOk ? IPS_BUSY : IPS_ALERT;
+            if (allOk)
+                IUUpdateSwitch(&Power1SP, states, names, n);
+
+            IDSetSwitch(&Power1SP, nullptr);
+            return true;
+        }
+
+        // handle power line 2
+        if (!strcmp(name, Power2SP.name))
+        {
+            sprintf(cmd, "C:1:%s", (strcmp(Power2S[0].name, names[0])) ? "0" : "1");
+            bool allOk = sendCommand(cmd, res);
+            Power2SP.s = allOk ? IPS_BUSY : IPS_ALERT;
+            if (allOk)
+                IUUpdateSwitch(&Power2SP, states, names, n);
+
+            IDSetSwitch(&Power2SP, nullptr);
+            return true;
+        }
+
+        // handle power line 3
+        if (!strcmp(name, Power3SP.name))
+        {
+            sprintf(cmd, "C:2:%s", (strcmp(Power3S[0].name, names[0])) ? "0" : "1");
+            bool allOk = sendCommand(cmd, res);
+            Power3SP.s = allOk ? IPS_BUSY : IPS_ALERT;
+            if (allOk)
+                IUUpdateSwitch(&Power3SP, states, names, n);
+
+            IDSetSwitch(&Power3SP, nullptr);
+            return true;
+        }
+
         // Stepper select
         if (!strcmp(name, FocuserSelectSP.name))
         {
@@ -506,6 +548,22 @@ bool IndiAstroLink4mini2::readDevice()
             else
             {
                 ParametersNP.s = IPS_IDLE;
+            }
+
+            if (Power1SP.s != IPS_OK || Power2SP.s != IPS_OK || Power3SP.s != IPS_OK)
+            {
+                Power1S[0].s = (std::stod(result[Q_OUT1]) > 0) ? ISS_ON : ISS_OFF;
+                Power1S[1].s = (std::stod(result[Q_OUT1]) == 0) ? ISS_ON : ISS_OFF;
+                Power1SP.s = IPS_OK;
+                IDSetSwitch(&Power1SP, nullptr);
+                Power2S[0].s = (std::stod(result[Q_OUT2]) > 0) ? ISS_ON : ISS_OFF;
+                Power2S[1].s = (std::stod(result[Q_OUT2]) == 0) ? ISS_ON : ISS_OFF;
+                Power2SP.s = IPS_OK;
+                IDSetSwitch(&Power2SP, nullptr);
+                Power3S[0].s = (std::stod(result[Q_OUT3]) > 0) ? ISS_ON : ISS_OFF;
+                Power3S[1].s = (std::stod(result[Q_OUT3]) == 0) ? ISS_ON : ISS_OFF;
+                Power3SP.s = IPS_OK;
+                IDSetSwitch(&Power3SP, nullptr);
             }
 
             PWMN[0].value = std::stod(result[Q_PWM1]);
