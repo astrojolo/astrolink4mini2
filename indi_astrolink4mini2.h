@@ -193,7 +193,7 @@ private:
     };
 
     ISwitch Focuser1ModeS[3];
-    ISwitchVectorProperty FocuserModeSP;
+    ISwitchVectorProperty Focuser1ModeSP;
     enum
     {
         FS1_MODE_UNI,
@@ -202,7 +202,7 @@ private:
     };
 
     ISwitch Focuser2ModeS[3];
-    ISwitchVectorProperty FocuserModeSP;
+    ISwitchVectorProperty Focuser2ModeSP;
     enum
     {
         FS2_MODE_UNI,
