@@ -35,7 +35,7 @@ std::unique_ptr<IndiAstroLink4mini2> indiFocuserLink(new IndiAstroLink4mini2());
 //////////////////////////////////////////////////////////////////////
 ///Constructor
 //////////////////////////////////////////////////////////////////////
-IndiAstroLink4mini2::IndiAstroLink4mini2() : FI(this)
+IndiAstroLink4mini2::IndiAstroLink4mini2() : FI(this), WI(this)
 {
     setVersion(VERSION_MAJOR, VERSION_MINOR);
 }
@@ -102,6 +102,7 @@ bool IndiAstroLink4mini2::initProperties()
     //FOCUSER_HAS_BACKLASH);
 
     FI::initProperties(FOCUS_TAB);
+    WI::initProperties(ENVIRONMENT_TAB, ENVIRONMENT_TAB);
 
     addDebugControl();
     addSimulationControl();
@@ -138,6 +139,11 @@ bool IndiAstroLink4mini2::initProperties()
     IUFillNumber(&Focuser2SettingsN[FS2_COMP_THRESHOLD], "FS2_COMP_THRESHOLD", "Compensation threshold [steps]", "%.0f", 1, 1000, 10, 10);
     IUFillNumberVector(&Focuser2SettingsNP, Focuser2SettingsN, 3, getDeviceName(), "FOCUSER2_SETTINGS", "Focuser 2 settings", FOC2_SETTINGS_TAB, IP_RW, 60, IPS_IDLE);
 
+    // Environment Group
+    addParameter("WEATHER_TEMPERATURE", "Temperature (C)", -15, 35, 15);
+    addParameter("WEATHER_HUMIDITY", "Humidity %", 0, 100, 15);
+    addParameter("WEATHER_DEWPOINT", "Dew Point (C)", 0, 100, 15);
+
     return true;
 }
 
@@ -149,6 +155,7 @@ bool IndiAstroLink4mini2::updateProperties()
     if (isConnected())
     {
         FI::updateProperties();
+        WI::updateProperties();
         defineProperty(&FocuserSelectSP);
         defineProperty(&Focuser1SettingsNP);
         defineProperty(&Focuser2SettingsNP);
@@ -160,6 +167,7 @@ bool IndiAstroLink4mini2::updateProperties()
         deleteProperty(Focuser1SettingsNP.name);
         deleteProperty(Focuser2SettingsNP.name);
         deleteProperty(FocuserSelectSP.name);
+        WI::updateProperties();
         FI::updateProperties();
     }
 
@@ -438,6 +446,19 @@ bool IndiAstroLink4mini2::readDevice()
 
         if (result.size() > 5)
         {
+            if (std::stod(result[Q_SENS1_PRESENT]) > 0)
+            {
+                setParameterValue("WEATHER_TEMPERATURE", std::stod(result[Q_SENS1_TEMP]));
+                setParameterValue("WEATHER_HUMIDITY", std::stod(result[Q_SENS1_HUM]));
+                setParameterValue("WEATHER_DEWPOINT", std::stod(result[Q_SENS1_DEW]));
+                ParametersNP.s = IPS_OK;
+                IDSetNumber(&ParametersNP, nullptr);
+            }
+            else
+            {
+                ParametersNP.s = IPS_IDLE;
+            }
+            
             PowerDataN[POW_ITOT].value = std::stod(result[Q_ITOT]);
             PowerDataN[POW_REG].value = std::stod(result[Q_VREG]);
             PowerDataN[POW_VIN].value = std::stod(result[Q_VIN]);

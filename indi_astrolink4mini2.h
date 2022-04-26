@@ -114,7 +114,7 @@ namespace Connection
     class Serial;
 }
 
-class IndiAstroLink4mini2 : public INDI::DefaultDevice, public INDI::FocuserInterface
+class IndiAstroLink4mini2 : public INDI::DefaultDevice, public INDI::FocuserInterface, public INDI::WeatherInterface
 {
 
 public:
@@ -143,6 +143,12 @@ protected:
     virtual bool SetFocuserBacklash(int32_t steps) override;
     virtual bool SetFocuserBacklashEnabled(bool enabled) override;
     virtual bool SetFocuserMaxPosition(uint32_t ticks) override;
+
+    // Weather Overrides
+    virtual IPState updateWeather() override
+    {
+        return IPS_OK;
+    }
 
 private:
     virtual bool Handshake();
