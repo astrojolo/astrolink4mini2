@@ -203,6 +203,9 @@ bool IndiAstroLink4mini2::ISNewNumber(const char *dev, const char *name, double 
 {
     if (dev && !strcmp(dev, getDeviceName()))
     {
+        char cmd[ASTROLINK4_LEN] = {0};
+        char res[ASTROLINK4_LEN] = {0};
+
         // Handle PWM
         if (!strcmp(name, PWMNP.name))
         {
