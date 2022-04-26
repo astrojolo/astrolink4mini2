@@ -89,6 +89,10 @@ bool IndiAstroLink4mini2::initProperties()
 
     setDriverInterface(AUX_INTERFACE | FOCUSER_INTERFACE);
 
+    char focuserSelectLabel[15];
+    memset(focuserSelectLabel, 0, 15);
+    focuserIndex = IUGetConfigOnSwitchLabel(getDeviceName(), FocuserSelectSP.name, FocuserSelectS[0].name, focuserSelectLabel, 15) == 0 ? 0 : 1;
+
     FI::SetCapability(FOCUSER_CAN_ABS_MOVE |
                       FOCUSER_CAN_REL_MOVE |
                       FOCUSER_CAN_REVERSE |
@@ -154,7 +158,7 @@ bool IndiAstroLink4mini2::ISNewSwitch(const char *dev, const char *name, ISState
         // Stepper select
         if (!strcmp(name, FocuserSelectSP.name))
         {
-            //focuserIndex = (strcmp(FocuserSelectS[0].name, names[0])) ? 1 : 0;
+            focuserIndex = (strcmp(FocuserSelectS[0].name, names[0])) ? 1 : 0;
             FocuserSelectSP.s = FocusMaxPosNP.s = FocusReverseSP.s = FocusAbsPosNP.s = IPS_BUSY;
             IUUpdateSwitch(&FocuserSelectSP, states, names, n);
             IDSetSwitch(&FocuserSelectSP, nullptr);
@@ -327,8 +331,8 @@ bool IndiAstroLink4mini2::readDevice()
 
         //DEBUGF(INDI::Logger::DBG_SESSION, "Selected %i", selectedFocuser);
         
-        int focuserPosition = std::stoi(result[getFocuserIndex() == 1 ? Q_FOC2_POS : Q_FOC1_POS]);
-        int stepsToGo = std::stod(result[getFocuserIndex() == 1 ? Q_FOC2_TO_GO : Q_FOC1_TO_GO]);
+        int focuserPosition = std::stoi(result[focuserIndex == 1 ? Q_FOC2_POS : Q_FOC1_POS]);
+        int stepsToGo = std::stod(result[focuserIndex == 1 ? Q_FOC2_TO_GO : Q_FOC1_TO_GO]);
         FocusAbsPosN[0].value = focuserPosition;
         if (stepsToGo == 0)
         {
@@ -350,14 +354,14 @@ bool IndiAstroLink4mini2::readDevice()
             std::vector<std::string> result = split(res, ":");
             if (FocusMaxPosNP.s != IPS_OK)
             {
-                int index = getFocuserIndex() > 0 ? U_FOC2_MAX : U_FOC1_MAX;
+                int index = focuserIndex > 0 ? U_FOC2_MAX : U_FOC1_MAX;
                 FocusMaxPosN[0].value = std::stod(result[index]);
                 FocusMaxPosNP.s = IPS_OK;
                 IDSetNumber(&FocusMaxPosNP, nullptr);
             }    
             if (FocusReverseSP.s != IPS_OK)
             {
-                int index = getFocuserIndex() > 0 ? U_FOC2_REV : U_FOC1_REV;
+                int index = focuserIndex > 0 ? U_FOC2_REV : U_FOC1_REV;
                 FocusReverseS[0].s = (std::stoi(result[index]) > 0) ? ISS_ON : ISS_OFF;
                 FocusReverseS[1].s = (std::stoi(result[index]) == 0) ? ISS_ON : ISS_OFF;
                 FocusReverseSP.s = IPS_OK;
@@ -424,8 +428,4 @@ bool IndiAstroLink4mini2::updateSettings(const char *getCom, const char *setCom,
     return false;
 }
 
-int IndiAstroLink4mini2::getFocuserIndex()
-{
-    return FocuserSelectS[0].s == ISS_ON ? 0 : 1;
-}
 
