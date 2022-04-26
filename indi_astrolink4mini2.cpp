@@ -93,6 +93,20 @@ bool IndiAstroLink4mini2::initProperties()
     memset(focuserSelectLabel, 0, 15);
     focuserIndex = IUGetConfigOnSwitchLabel(getDeviceName(), FocuserSelectSP.name, focuserSelectLabel, 15) == 0 ? 0 : 1;
 
+    if (sendCommand("u", res))
+    {
+        std::vector<std::string> result = split(res, ":");
+        int index = focuserIndex > 0 ? U_FOC2_MAX : U_FOC1_MAX;
+        FocusMaxPosN[0].value = std::stod(result[index]);
+        FocusMaxPosNP.s = IPS_OK;
+        IDSetNumber(&FocusMaxPosNP, nullptr);
+        index = focuserIndex > 0 ? U_FOC2_REV : U_FOC1_REV;
+        FocusReverseS[0].s = (std::stoi(result[index]) > 0) ? ISS_ON : ISS_OFF;
+        FocusReverseS[1].s = (std::stoi(result[index]) == 0) ? ISS_ON : ISS_OFF;
+        FocusReverseSP.s = IPS_OK;
+        IDSetSwitch(&FocusReverseSP, nullptr);
+    }
+
     FI::SetCapability(FOCUSER_CAN_ABS_MOVE |
                       FOCUSER_CAN_REL_MOVE |
                       FOCUSER_CAN_REVERSE |
