@@ -115,8 +115,8 @@ bool IndiAstroLink4mini2::initProperties()
     serialConnection->setDefaultPort("/dev/ttyUSB0");
     serialConnection->setDefaultBaudRate(serialConnection->B_38400);
 
-    IUFillSwitch(&FocuserSelectS[0], "FOC_SEL_1", "Focuser 1", ISS_ON);
-    IUFillSwitch(&FocuserSelectS[1], "FOC_SEL_2", "Focuser 2", ISS_OFF);
+    IUFillSwitch(&FocuserSelectS[0], "FOC_SEL_1", "Focuser 1", (getFindex() == 0 ? ISS_ON : ISS_OFF));
+    IUFillSwitch(&FocuserSelectS[1], "FOC_SEL_2", "Focuser 2", (getFindex() > 0 ? ISS_ON : ISS_OFF));
     IUFillSwitchVector(&FocuserSelectSP, FocuserSelectS, 2, getDeviceName(), "FOCUSER_SELECT", "Focuser select", FOCUS_TAB, IP_RW, ISR_1OFMANY, 60, IPS_IDLE);
 
 
@@ -193,10 +193,10 @@ bool IndiAstroLink4mini2::loadConfig(bool silent, const char *property)
 {
     bool result = INDI::DefaultDevice::loadConfig(silent, property);
     // force update from the device
-    FocusMaxPosNP.s = FocusReverseSP.s = FocusAbsPosNP.s = IPS_BUSY;
+    /*FocusMaxPosNP.s = FocusReverseSP.s = FocusAbsPosNP.s = IPS_BUSY;
     IDSetSwitch(&FocusReverseSP, nullptr);
     IDSetNumber(&FocusMaxPosNP, nullptr);
-    IDSetNumber(&FocusAbsPosNP, nullptr);    
+    IDSetNumber(&FocusAbsPosNP, nullptr);    */
     DEBUG(INDI::Logger::DBG_DEBUG, "Init complete");
     initComplete = true;
 
