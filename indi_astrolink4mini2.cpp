@@ -610,17 +610,14 @@ bool IndiAstroLink4mini2::sendCommand(const char *cmd, char *res)
 
 bool IndiAstroLink4mini2::readDevice()
 {
-    DEBUGF(INDI::Logger::DBG_SESSION, "Read device %d", 1);
     char res[ASTROLINK4_LEN] = {0};
     if (sendCommand("q", res))
     {
-        DEBUGF(INDI::Logger::DBG_SESSION, "Result %s", res);
         std::vector<std::string> result = split(res, ":");
         result.erase(result.begin());
 
         int focuserPosition = std::stoi(result[getFindex() == 1 ? Q_FOC2_POS : Q_FOC1_POS]);
         int stepsToGo = std::stod(result[getFindex() == 1 ? Q_FOC2_TO_GO : Q_FOC1_TO_GO]);
-        DEBUGF(INDI::Logger::DBG_SESSION, "Foc Pos %d", focuserPosition);
         FocusAbsPosN[0].value = focuserPosition;
         if (stepsToGo == 0)
         {
@@ -635,11 +632,8 @@ bool IndiAstroLink4mini2::readDevice()
 
         if (result.size() > 5)
         {
-            DEBUGF(INDI::Logger::DBG_SESSION, "Result size %d", result.size());
             if (std::stoi(result[Q_SENS1_PRESENT]) > 0)
             {
-                DEBUGF(INDI::Logger::DBG_SESSION, "Sensor present %d", std::stoi(result[Q_SENS1_PRESENT]));
-                DEBUGF(INDI::Logger::DBG_SESSION, "Sensor temp %d",std::stod(result[Q_SENS1_TEMP]));
                 setParameterValue("WEATHER_TEMPERATURE", std::stod(result[Q_SENS1_TEMP]));
                 setParameterValue("WEATHER_HUMIDITY", std::stod(result[Q_SENS1_HUM]));
                 setParameterValue("WEATHER_DEWPOINT", std::stod(result[Q_SENS1_DEW]));
