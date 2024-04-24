@@ -631,8 +631,11 @@ bool IndiAstroLink4mini2::readDevice()
 
         if (result.size() > 5)
         {
+            DEBUGF(INDI::Logger::DBG_SESSION, "Result size %d", result.size());
             if (std::stod(result[Q_SENS1_PRESENT]) > 0)
             {
+                DEBUGF(INDI::Logger::DBG_SESSION, "Sensor present %d", result[Q_SENS1_PRESENT]);
+                DEBUGF(INDI::Logger::DBG_SESSION, "Sensor temp %d", result[Q_SENS1_TEMP]);
                 setParameterValue("WEATHER_TEMPERATURE", std::stod(result[Q_SENS1_TEMP]));
                 setParameterValue("WEATHER_HUMIDITY", std::stod(result[Q_SENS1_HUM]));
                 setParameterValue("WEATHER_DEWPOINT", std::stod(result[Q_SENS1_DEW]));
