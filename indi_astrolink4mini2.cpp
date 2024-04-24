@@ -612,7 +612,7 @@ bool IndiAstroLink4mini2::readDevice()
     char res[ASTROLINK4_LEN] = {0};
     if (sendCommand("q", res))
     {
-        DEBUGF(INDI::Logger::DBG_SESSION, "Result %s", res);
+        // DEBUGF(INDI::Logger::DBG_SESSION, "Result %s", res);
         std::vector<std::string> result = split(res, ":");
         result.erase(result.begin());
 
@@ -632,11 +632,11 @@ bool IndiAstroLink4mini2::readDevice()
 
         if (result.size() > 5)
         {
-            // DEBUGF(INDI::Logger::DBG_SESSION, "Result size %d", result.size());
+            DEBUGF(INDI::Logger::DBG_SESSION, "Result size %d", result.size());
             if (std::stod(result[Q_SENS1_PRESENT]) > 0)
             {
-                // DEBUGF(INDI::Logger::DBG_SESSION, "Sensor present %d", result[Q_SENS1_PRESENT]);
-                // DEBUGF(INDI::Logger::DBG_SESSION, "Sensor temp %d", result[Q_SENS1_TEMP]);
+                DEBUGF(INDI::Logger::DBG_SESSION, "Sensor present %d", std::stod(result[Q_SENS1_PRESENT]));
+                DEBUGF(INDI::Logger::DBG_SESSION, "Sensor temp %d",std::stod(result[Q_SENS1_TEMP]));
                 setParameterValue("WEATHER_TEMPERATURE", std::stod(result[Q_SENS1_TEMP]));
                 setParameterValue("WEATHER_HUMIDITY", std::stod(result[Q_SENS1_HUM]));
                 setParameterValue("WEATHER_DEWPOINT", std::stod(result[Q_SENS1_DEW]));
