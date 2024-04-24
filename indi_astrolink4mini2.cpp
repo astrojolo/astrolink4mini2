@@ -22,7 +22,7 @@
 #define VERSION_MAJOR 0
 #define VERSION_MINOR 2
 
-#define ASTROLINK4_LEN 200
+#define ASTROLINK4_LEN 250
 #define ASTROLINK4_TIMEOUT 3
 
 #define POLLTIME 500
@@ -614,7 +614,13 @@ bool IndiAstroLink4mini2::readDevice()
     {
         DEBUGF(INDI::Logger::DBG_SESSION, "Result %s", res);
         std::vector<std::string> result = split(res, ":");
+        DEBUGF(INDI::Logger::DBG_SESSION, "Sensor present %s", result[0]);
+        DEBUGF(INDI::Logger::DBG_SESSION, "Sensor present %s", result[1]);
+        DEBUGF(INDI::Logger::DBG_SESSION, "Sensor present %s", result[2]);
         result.erase(result.begin());
+
+        DEBUGF(INDI::Logger::DBG_SESSION, "Sensor present %s", result[Q_FOC1_POS]);
+        DEBUGF(INDI::Logger::DBG_SESSION, "Sensor present %s", result[Q_SENS1_PRESENT]);
 
         int focuserPosition = std::stoi(result[getFindex() == 1 ? Q_FOC2_POS : Q_FOC1_POS]);
         int stepsToGo = std::stod(result[getFindex() == 1 ? Q_FOC2_TO_GO : Q_FOC1_TO_GO]);
