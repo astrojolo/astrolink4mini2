@@ -635,12 +635,6 @@ bool IndiAstroLink4mini2::readDevice()
                 setParameterValue("WEATHER_TEMPERATURE", std::stod(result[Q_SENS1_TEMP]));
                 setParameterValue("WEATHER_HUMIDITY", std::stod(result[Q_SENS1_HUM]));
                 setParameterValue("WEATHER_DEWPOINT", std::stod(result[Q_SENS1_DEW]));
-                ParametersNP.s = IPS_OK;
-                IDSetNumber(&ParametersNP, nullptr);
-            }
-            else
-            {
-                ParametersNP.s = IPS_IDLE;
             }
 
             if (Power1SP.s != IPS_OK || Power2SP.s != IPS_OK || Power3SP.s != IPS_OK)
