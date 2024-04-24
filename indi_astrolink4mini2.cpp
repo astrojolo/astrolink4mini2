@@ -73,7 +73,7 @@ bool IndiAstroLink4mini2::Handshake()
 
 void IndiAstroLink4mini2::TimerHit()
 {
-    if (isConnected() && initComplete)
+    if (isConnected())
     {
         readDevice();
         SetTimer(POLLTIME);
@@ -636,7 +636,6 @@ bool IndiAstroLink4mini2::readDevice()
             DEBUGF(INDI::Logger::DBG_SESSION, "Result size %d", result.size());
             if (std::stoi(result[Q_SENS1_PRESENT]) > 0)
             {
-                DEBUGF(INDI::Logger::DBG_SESSION, "Sensor present %s", result[Q_SENS1_PRESENT]);
                 DEBUGF(INDI::Logger::DBG_SESSION, "Sensor present %d", std::stoi(result[Q_SENS1_PRESENT]));
                 DEBUGF(INDI::Logger::DBG_SESSION, "Sensor temp %d",std::stod(result[Q_SENS1_TEMP]));
                 setParameterValue("WEATHER_TEMPERATURE", std::stod(result[Q_SENS1_TEMP]));
