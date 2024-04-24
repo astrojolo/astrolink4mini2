@@ -618,6 +618,7 @@ bool IndiAstroLink4mini2::readDevice()
 
         int focuserPosition = std::stoi(result[getFindex() == 1 ? Q_FOC2_POS : Q_FOC1_POS]);
         int stepsToGo = std::stod(result[getFindex() == 1 ? Q_FOC2_TO_GO : Q_FOC1_TO_GO]);
+        DEBUGF(INDI::Logger::DBG_SESSION, "Foc Pos %d", focuserPosition);
         FocusAbsPosN[0].value = focuserPosition;
         if (stepsToGo == 0)
         {
