@@ -608,6 +608,7 @@ bool IndiAstroLink4mini2::sendCommand(const char *cmd, char *res)
 
 bool IndiAstroLink4mini2::readDevice()
 {
+    DEBUGF(INDI::Logger::DBG_SESSION, "Read device %d", 1);
     char res[ASTROLINK4_LEN] = {0};
     if (sendCommand("q", res))
     {
