@@ -307,8 +307,10 @@ bool IndiAstroLink4mini2::ISNewNumber(const char *dev, const char *name, double 
             return true;
         }
 
-        if (strstr(name, "FOCUS"))
+        if (strstr(name, "FOCUS_"))
             return FI::processNumber(dev, name, values, names, n);
+        if (strstr(name, "WEATHER_"))
+            return WI::processNumber(dev, name, values, names, n);     
     }
     return INDI::DefaultDevice::ISNewNumber(dev, name, values, names, n);
 }
@@ -435,8 +437,10 @@ bool IndiAstroLink4mini2::ISNewSwitch(const char *dev, const char *name, ISState
             return true;
         }
 
-        if (strstr(name, "FOCUS"))
+        if (strstr(name, "FOCUS_")) 
             return FI::processSwitch(dev, name, states, names, n);
+        if (strstr(name, "WEATHER_")) 
+            return WI::processSwitch(dev, name, states, names, n);
     }
     return INDI::DefaultDevice::ISNewSwitch(dev, name, states, names, n);
 }
