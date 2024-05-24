@@ -61,10 +61,13 @@
 #define Q_FOC2_COMP 22
 #define Q_OVERTYPE 23
 #define Q_OVERVALUE 24
-#define Q_MLX_TEMP 25
-#define Q_MLX_AUX 26
-#define Q_SENS2_HUM 30
-#define Q_SENS2_DEW 31
+#define Q_MLX_PRESENT 25
+#define Q_MLX_TEMP 26
+#define Q_MLX_AUX 27
+#define Q_SENS2E_PRESENT 28
+#define Q_SENS2E_TEMP 29
+#define Q_SENS2E_HUM 30
+#define Q_SENS2E_DEW 31
 #define Q_SBM_PRESENT 32
 #define Q_SBM 33
 
@@ -221,6 +224,9 @@ private:
         POW_WH
     };
 
+    INumber SQMOffsetN[1];
+    INumberVectorProperty SQMOffsetNP;
+        
     ISwitch Power1S[2];
     ISwitchVectorProperty Power1SP;
     ISwitch Power2S[2];

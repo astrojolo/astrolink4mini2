@@ -151,6 +151,9 @@ bool IndiAstroLink4mini2::initProperties()
     IUFillSwitch(&PowerDefaultOnS[1], "POW_DEF_ON2", "DC2", ISS_OFF);
     IUFillSwitch(&PowerDefaultOnS[2], "POW_DEF_ON3", "DC3", ISS_OFF);
     IUFillSwitchVector(&PowerDefaultOnSP, PowerDefaultOnS, 3, getDeviceName(), "POW_DEF_ON", "Power default ON", POWER_TAB, IP_RW, ISR_NOFMANY, 60, IPS_IDLE);
+	IUFillNumber(&SQMOffsetN[0], "SQMOffset", "mag/arcsec2", "%0.2f", -1, 1, 0.01, 0);
+	IUFillNumberVector(&SQMOffsetNP, SQMOffsetN, 1, getDeviceName(), "SQMOFFSET", "SQM calibration", OPTIONS_TAB, IP_RW, 60, IPS_IDLE);    
+    
 
     // focuser settings
     IUFillNumber(&Focuser1SettingsN[FS1_SPEED], "FS1_SPEED", "Speed [pps]", "%.0f", 10, 200, 1, 100);
@@ -180,9 +183,13 @@ bool IndiAstroLink4mini2::initProperties()
     IUFillSwitchVector(&Focuser2ModeSP, Focuser2ModeS, 3, getDeviceName(), "FOCUSER2_MODE", "Focuser mode", FOC2_SETTINGS_TAB, IP_RW, ISR_1OFMANY, 60, IPS_IDLE);
 
     // Environment Group
-    addParameter("WEATHER_TEMPERATURE", "Temperature (C)", -15, 35, 15);
-    addParameter("WEATHER_HUMIDITY", "Humidity %", 0, 100, 15);
-    addParameter("WEATHER_DEWPOINT", "Dew Point (C)", 0, 100, 15);
+	addParameter("WEATHER_TEMPERATURE", "Temperature [C]", -15, 35, 15);
+	addParameter("WEATHER_HUMIDITY", "Humidity %", 0, 100, 15);
+	addParameter("WEATHER_DEWPOINT", "Dew Point [C]", -25, 20, 15);
+	addParameter("WEATHER_SKY_TEMP", "Sky temperature [C]", -50, 20, 20);
+	addParameter("WEATHER_SKY_DIFF", "Temperature difference [C]", -5, 40, 10);
+	addParameter("SQM_READING", "Sky brightness [mag/arcsec2]", 10, 25, 15);
+    
 
     return true;
 }
@@ -207,9 +214,11 @@ bool IndiAstroLink4mini2::updateProperties()
         defineProperty(&Power3SP);
         defineProperty(&PWMNP);
         defineProperty(&PowerDefaultOnSP);
+        defineProperty(&SQMOffsetNP);    
     }
     else
     {
+        deleteProperty(SQMOffsetNP.name);
         deleteProperty(PowerDataNP.name);
         deleteProperty(Focuser1SettingsNP.name);
         deleteProperty(Focuser2SettingsNP.name);
@@ -255,6 +264,16 @@ bool IndiAstroLink4mini2::ISNewNumber(const char *dev, const char *name, double 
             IDSetNumber(&PWMNP, nullptr);
             return true;
         }
+        
+        // SQM calibration
+        if (!strcmp(name, SQMOffsetNP.name))
+        {
+            SQMOffsetNP.s = IPS_BUSY;
+            IUUpdateNumber(&SQMOffsetNP, values, names, n);
+            SQMOffsetNP.s = IPS_OK;
+            IDSetNumber(&SQMOffsetNP, nullptr);
+            return true;
+        }            
 
         // Focuser settings
         if (!strcmp(name, Focuser1SettingsNP.name))
@@ -453,7 +472,9 @@ bool IndiAstroLink4mini2::ISNewText(const char *dev, const char *name, char *tex
 bool IndiAstroLink4mini2::saveConfigItems(FILE *fp)
 {
     IUSaveConfigSwitch(fp, &FocuserSelectSP);
+    IUSaveConfigNumber(fp, &SQMOffsetNP);
     FI::saveConfigItems(fp);
+    WI::saveConfigItems(fp);
     INDI::DefaultDevice::saveConfigItems(fp);
     return true;
 }
@@ -642,6 +663,31 @@ bool IndiAstroLink4mini2::readDevice()
                 setParameterValue("WEATHER_HUMIDITY", std::stod(result[Q_SENS1_HUM]));
                 setParameterValue("WEATHER_DEWPOINT", std::stod(result[Q_SENS1_DEW]));
             }
+            else
+            {
+                setParameterValue("WEATHER_TEMPERATURE", 0.0);
+                setParameterValue("WEATHER_HUMIDITY", 0.0);
+                setParameterValue("WEATHER_DEWPOINT", 0.0);
+                
+            }       
+            if (std::stoi(result[Q_MLX_PRESENT]) > 0)
+            {
+                setParameterValue("WEATHER_SKY_TEMP", std::stod(result[Q_MLX_TEMP]));
+                setParameterValue("WEATHER_SKY_DIFF", std::stod(result[Q_MLX_TEMP]) - std::stod(result[Q_MLX_AUX]));     
+            }
+            else
+            {
+                setParameterValue("WEATHER_SKY_TEMP", 0.0);
+                setParameterValue("WEATHER_SKY_DIFF", 0.0);              
+            }
+            if (std::stoi(result[Q_SBM_PRESENT]) > 0)
+            {
+                setParameterValue("SQM_READING", std::stod(result[Q_SBM]) + SQMOffsetN[0].value);
+            }
+            else
+            {
+                setParameterValue("SQM_READING", 0.0);
+            }                 
 
             if (Power1SP.s != IPS_OK || Power2SP.s != IPS_OK || Power3SP.s != IPS_OK)
             {

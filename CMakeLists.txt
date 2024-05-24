@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.4.7)
 PROJECT(indi-astrolink4mini2 CXX C)
 
 set (VERSION_MAJOR 1)
-set (VERSION_MINOR 0)
+set (VERSION_MINOR 1)
 
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules/")
 set(BIN_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/bin")
