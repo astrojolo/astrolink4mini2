@@ -93,7 +93,7 @@ bool IndiAstroLink4mini2::initProperties()
 
     char focuserSelectLabel[15];
     memset(focuserSelectLabel, 0, 15);
-    setFindex(IUGetConfigOnSwitchName(getDeviceName(), FocuserSelectSP.name, focuserSelectLabel, 15) == 0 ? 0 : 1);
+    setFindex(IUGetConfigOnSwitchLabel(getDeviceName(), FocuserSelectSP.name, focuserSelectLabel, 15) == 0 ? 0 : 1);
     initComplete = false;
 
     FI::SetCapability(FOCUSER_CAN_ABS_MOVE |
