@@ -1,25 +1,28 @@
-# astrolink4mini2
-INDI driver for AstroLink 4 mini II device (under development)
+## Device
+https://shop.astrojolo.com/astrolink-4-controllers/
 
-# Installing INDI server and libraries
-To start you need to download and install INDI environment. See [INDI page](http://indilib.org/download.html) for details. 
 
-Then AstroLink 4 mini II INDI driver needs to be fetched and installed:
+# AstroLink 4 mini II driver installation
+## Requirements
+* INDI http://indilib.org/download.html
 
+
+### Required packages
 ```
-git clone https://github.com/astrojolo/astrolink4mini2.git
+sudo apt update
+sudo apt install git build-essential cmake libindi-dev
+```
+
+### INDI driver installation
+```
+git clone https://github.com/astrojolo/astrolink4mini2
 cd astrolink4mini2
-mkdir build
-cd build
+mkdir build && cd build
 cmake -DCMAKE_INSTALL_PREFIX=/usr ..
 make
+```
+You can install the drivers by running:
+```
 sudo make install
 ```
-
-Then indiserver needs to be started with AstroLink 4 mini II drivers:
-
-```
-indiserver -v indi_astrolink4mini2
-```
-
-Now AstroLink 4 mini II can be used with any software that supports INDI drivers, like KStars with Ekos.
+After these steps AstroLink 4 mini II driver will be visible in the Aux devices lists under **Astrojolo** group.
