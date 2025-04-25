@@ -503,7 +503,7 @@ IPState IndiAstroLink4mini2::MoveAbsFocuser(uint32_t targetTicks)
 
 IPState IndiAstroLink4mini2::MoveRelFocuser(FocusDirection dir, uint32_t ticks)
 {
-    return MoveAbsFocuser(dir == FOCUS_INWARD ? FocusAbsPosNP[0].getValue() - ticks : FocusAbsPosN[0].getValue() + ticks);
+    return MoveAbsFocuser(dir == FOCUS_INWARD ? FocusAbsPosNP[0].getValue() - ticks : FocusAbsPosNP[0].getValue() + ticks);
 }
 
 bool IndiAstroLink4mini2::AbortFocuser()
@@ -808,7 +808,7 @@ bool IndiAstroLink4mini2::readDevice()
                 int index = getFindex() > 0 ? U_FOC2_REV : U_FOC1_REV;
                 FocusReverseSP[0].setState((std::stoi(result[index]) > 0) ? ISS_ON : ISS_OFF);
                 FocusReverseSP[1].setState((std::stoi(result[index]) == 0) ? ISS_ON : ISS_OFF);
-                FocusReverseSP.setState(IPS_OK_;
+                FocusReverseSP.setState(IPS_OK);
                 FocusReverseSP.apply();
             }
             FocuserSelectSP.s = IPS_OK;
