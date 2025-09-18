@@ -2,11 +2,6 @@
 
 # AstroLink 4 mini II  
 
-![ASCOM & INDI Drivers](https://img.shields.io/badge/Drivers-ASCOM%20%7C%20INDI-blue)  
-![Dual Focuser](https://img.shields.io/badge/Focuser-Dual%20Motor-green)  
-![PWM Dew Control](https://img.shields.io/badge/Dew_Control-PWM-orange)  
-![Multiple Sensors](https://img.shields.io/badge/Sensors-Temp%2FHumidity%2FSky_Brightness-lightgrey)  
-
 ---
 
 ## Overview  
